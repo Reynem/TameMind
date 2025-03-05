@@ -61,7 +61,9 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onDurationChange(@NonNull TimeRangePicker.TimeDuration timeDuration) {
-
+                int hours = timeDuration.getHour() % 12;
+                int totalMinutes =  hours * 10;
+                Log.d("TimeRangePicker", "Duration: " + totalMinutes + " minutes");
             }
         });
         timePicker.setClockVisible(false);
