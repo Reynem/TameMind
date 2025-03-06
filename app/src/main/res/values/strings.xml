@@ -2,4 +2,6 @@
     <string name="app_name">TameMind</string>
     <string name="hello_world">Hello world</string>
     <string name="select_time">Select Time</string>
+    <string name="startTime">00:00</string>
+    <string name="feed">Feed</string>
 </resources>

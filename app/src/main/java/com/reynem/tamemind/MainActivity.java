@@ -10,7 +10,7 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
+ import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDurationChange(@NonNull TimeRangePicker.TimeDuration timeDuration) {
                 int hours = timeDuration.getHour() % 12;
-                int totalMinutes =  hours * 10;
+                int totalMinutes =  hours * 10 + timeDuration.getMinute() % 11;
                 Log.d("TimeRangePicker", "Duration: " + totalMinutes + " minutes");
             }
         });
