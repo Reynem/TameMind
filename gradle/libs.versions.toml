@@ -9,6 +9,7 @@ activity = "1.10.0"
 constraintlayout = "2.2.0"
 recyclerview = "1.4.0"
 timerangepicker = "1.0.0"
+circularseekbar = "1.4.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -20,6 +21,7 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version = "placeholder" }
 timerangepicker = { group = "nl.joery.timerangepicker", name = "timerangepicker", version.ref = "timerangepicker" }
+circularseekbar = { group = "me.tankery.lib", name = "circularSeekBar", version.ref = "circularseekbar" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

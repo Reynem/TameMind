@@ -1,25 +1,23 @@
 package com.reynem.tamemind;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
- import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import nl.joery.timerangepicker.TimeRangePicker;
 
 public class MainActivity extends AppCompatActivity {
-    Button timeButton;
-    int hour, minute;
+    private Handler handler = new Handler();
+    private float progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,46 +30,54 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        ConstraintLayout layout = new ConstraintLayout(this);
-        layout.setLayoutParams(new ConstraintLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.MATCH_PARENT
-        ));
+        CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
+        Button startTimer = findViewById(R.id.startTimer);
 
-        TimeRangePicker timePicker = getTimeRangePicker();
 
-    }
-
-    @NonNull
-    private TimeRangePicker getTimeRangePicker() {
-        TimeRangePicker timePicker = findViewById(R.id.picker);
-        final TimeRangePicker.Time[] timeSelected = {new TimeRangePicker.Time(10)};
-        timePicker.setOnTimeChangeListener(new TimeRangePicker.OnTimeChangeListener() {
+        circularSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
-            public void onStartTimeChange(@NonNull TimeRangePicker.Time time) {
-                Log.d("TimeRangePicker", "Start time: " + time);
+            public void onStopTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
 
-                timeSelected[0] = time;
             }
 
             @Override
-            public void onEndTimeChange(@NonNull TimeRangePicker.Time time) {
-                Log.d("TimeRangePicker", "End time: " + time);
+            public void onStartTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
+
             }
 
             @Override
-            public void onDurationChange(@NonNull TimeRangePicker.TimeDuration timeDuration) {
-                int hours = timeDuration.getHour() % 12;
-                int totalMinutes =  hours * 10 + timeDuration.getMinute() % 11;
-                Log.d("TimeRangePicker", "Duration: " + totalMinutes + " minutes");
+            public void onProgressChanged(CircularSeekBar seekBar, float progress, boolean fromUser) {
+                if (fromUser) {
+                    Log.d("CircularSeekBar", "User Progress: " + progress);
+                }
             }
         });
-        timePicker.setClockVisible(false);
-        accessCloser(timeSelected[0]);
-        return timePicker;
+
+        startTimer.setOnClickListener(v -> {
+            progress = circularSeekBar.getProgress();
+            startCountdown(circularSeekBar);
+        });
+
     }
 
-    private void accessCloser(TimeRangePicker.Time time){
-        System.out.println(time); // В разработке
+    private void startCountdown(CircularSeekBar circularSeekBar) {
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (progress > 0) {
+                    progress--;
+                    circularSeekBar.setProgress(progress);
+                    handler.postDelayed(this, 1000);
+                }
+
+                else{
+                    sendNotification();
+                }
+            }
+        }, 1000);
+    }
+
+    private void sendNotification(){
+        Log.d("Time stopped", "вы закончили");
     }
 }

@@ -9,49 +9,44 @@
     tools:context=".MainActivity"
     android:background="@color/lightGray">
 
-    <nl.joery.timerangepicker.TimeRangePicker
-        android:id="@+id/picker"
+    <me.tankery.lib.circularseekbar.CircularSeekBar
+        android:id="@+id/circularSeekBar"
         android:layout_width="300dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="60dp"
-        android:layout_marginTop="180dp"
-        android:layout_marginEnd="60dp"
-        android:layout_marginBottom="250dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+
+        android:layout_height="300dp"
+        android:layout_marginStart="180dp"
+        android:layout_marginTop="160dp"
+        android:layout_marginEnd="180dp"
+        app:cs_circle_color="@color/darkYellow"
+        app:cs_circle_progress_color="@color/darkGreen"
+        app:cs_circle_stroke_width="10dp"
+        app:cs_circle_style="round"
+        app:cs_disable_pointer="false"
+        app:cs_disable_progress_glow="true"
+        app:cs_hide_progress_when_empty="true"
+        app:cs_lock_enabled="true"
+        app:cs_max="120"
+        app:cs_pointer_color="@color/darkGreen"
+        app:cs_pointer_stroke_width="21dp"
+        app:cs_progress="25"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:trp_clockVisible="false"
-        app:trp_endTime="6:30"
-        tools:trp_sliderRangeColor="@color/darkGreen"
-        tools:trp_startTime="12:00" />
+        app:layout_constraintTop_toTopOf="@+id/motivation" />
 
     <TextView
         android:id="@+id/timeLeft"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="175dp"
-        android:layout_marginTop="58dp"
+        android:layout_marginTop="60dp"
         android:layout_marginEnd="175dp"
         android:text="@string/startTime"
         android:textSize="55sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/picker" />
+        app:layout_constraintTop_toBottomOf="@+id/circularSeekBar" />
 
-    <Button
-        android:id="@+id/startButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="175dp"
-        android:layout_marginTop="17dp"
-        android:layout_marginEnd="175dp"
-        android:shadowColor="#D1623E"
-        android:text="@string/feed"
-        app:cornerRadius="5dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
 
     <TextView
         android:id="@+id/motivation"
@@ -59,11 +54,23 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="175dp"
         android:layout_marginEnd="175dp"
-        android:layout_marginBottom="40dp"
         android:text="@string/app_name"
-        app:layout_constraintBottom_toTopOf="@+id/picker"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/startTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="160dp"
+        android:text="@string/select_time"
+        app:cornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
