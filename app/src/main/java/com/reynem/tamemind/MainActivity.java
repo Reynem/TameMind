@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (progress > 0) {
+                if (progress > 1) {
                     progress--;
                     circularSeekBar.setProgress(progress);
                     handler.postDelayed(this, 1000);
