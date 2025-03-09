@@ -1,19 +1,21 @@
 package com.reynem.tamemind;
 
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.util.Log;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
-
+import com.reynem.tamemind.utils.NotificationFarm;
+import android.Manifest;
 
 public class MainActivity extends AppCompatActivity {
     private Handler handler = new Handler();
@@ -30,9 +32,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        // I will put it there
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+            }
+        }
+
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         Button startTimer = findViewById(R.id.startTimer);
-
 
         circularSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
@@ -47,9 +56,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onProgressChanged(CircularSeekBar seekBar, float progress, boolean fromUser) {
-                if (fromUser) {
-                    Log.d("CircularSeekBar", "User Progress: " + progress);
-                }
+
             }
         });
 
@@ -61,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startCountdown(CircularSeekBar circularSeekBar) {
+        circularSeekBar.setDisablePointer(true);
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -72,12 +80,17 @@ public class MainActivity extends AppCompatActivity {
 
                 else{
                     sendNotification();
+                    circularSeekBar.setDisablePointer(false);
                 }
             }
         }, 1000);
+
     }
 
     private void sendNotification(){
-        Log.d("Time stopped", "вы закончили");
+        NotificationFarm notificationFarm = new NotificationFarm();
+        notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
     }
+
+
 }
