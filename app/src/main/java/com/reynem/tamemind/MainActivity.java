@@ -4,6 +4,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
@@ -16,10 +17,15 @@ import androidx.core.view.WindowInsetsCompat;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
+import android.widget.TextView;
+
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private float progress;
+    private TextView shownTime;
+    private Button startTimer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,13 +46,17 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
+
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
-        Button startTimer = findViewById(R.id.startTimer);
+        startTimer = findViewById(R.id.startTimer);
+        shownTime = findViewById(R.id.timeLeft);
 
         circularSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
-
+                assert circularSeekBar != null;
+                progress = circularSeekBar.getProgress();
+                shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
             }
 
             @Override
@@ -60,34 +70,43 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+
+
         startTimer.setOnClickListener(v -> {
-            progress = circularSeekBar.getProgress();
+            progress = circularSeekBar.getProgress() * 60;
+            shownTime = findViewById(R.id.timeLeft);
+            startTimer.setVisibility(View.INVISIBLE);
             startCountdown(circularSeekBar);
         });
+
 
     }
 
     private void startCountdown(CircularSeekBar circularSeekBar) {
         circularSeekBar.setDisablePointer(true);
+        if (progress % 60 != 0) progress -= (progress % 60);
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (progress > 1) {
                     progress--;
-                    circularSeekBar.setProgress(progress);
+                    int minutes = (int) (progress / 60);
+                    int seconds = (int) (progress % 60);
+                    circularSeekBar.setProgress(minutes);
+                    shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
                     handler.postDelayed(this, 1000);
-                }
-
-                else{
-                    sendNotification();
+                } else {
+                    sendSuccessNotification();
                     circularSeekBar.setDisablePointer(false);
+                    startTimer.setVisibility(View.VISIBLE);
                 }
             }
         }, 1000);
 
     }
 
-    private void sendNotification(){
+    private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
         notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
     }

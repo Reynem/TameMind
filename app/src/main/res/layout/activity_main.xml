@@ -15,24 +15,26 @@
 
         android:layout_height="300dp"
         android:layout_marginStart="180dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="150dp"
         android:layout_marginEnd="180dp"
         app:cs_circle_color="@color/darkYellow"
+        app:cs_circle_fill="@color/brightYellow"
         app:cs_circle_progress_color="@color/darkGreen"
-        app:cs_circle_stroke_width="10dp"
+        app:cs_circle_stroke_width="20dp"
         app:cs_circle_style="round"
         app:cs_disable_pointer="false"
         app:cs_disable_progress_glow="true"
         app:cs_hide_progress_when_empty="true"
+
         app:cs_lock_enabled="true"
         app:cs_max="120"
         app:cs_pointer_color="@color/darkGreen"
-        app:cs_pointer_stroke_width="21dp"
+        app:cs_pointer_stroke_width="31dp"
         app:cs_progress="25"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.502"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/motivation" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/timeLeft"
@@ -53,9 +55,11 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="175dp"
+        android:layout_marginTop="100dp"
         android:layout_marginEnd="175dp"
         android:text="@string/app_name"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
