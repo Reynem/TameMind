@@ -14,12 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TameMind"
         tools:targetApi="31" >
-        <activity
-            android:name=".NavigationView"
-            android:exported="false"
-            android:label="@string/title_activity_navigation_view"
-            android:theme="@style/Theme.TameMind.NoActionBar" />
-        <activity
+       <activity
             android:name=".MainActivity"
             android:exported="true" >
             <intent-filter>

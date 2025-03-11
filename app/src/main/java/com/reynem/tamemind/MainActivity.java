@@ -14,11 +14,9 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
-import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.TextView;
