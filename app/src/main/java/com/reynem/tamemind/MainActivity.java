@@ -14,11 +14,16 @@ import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import me.tankery.lib.circularseekbar.CircularSeekBar;
+
+import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
         shownTime = findViewById(R.id.timeLeft);
@@ -56,6 +60,8 @@ public class MainActivity extends AppCompatActivity {
             public void onStopTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
                 assert circularSeekBar != null;
                 progress = circularSeekBar.getProgress();
+                if (progress % 5 != 0) progress -= (progress % 5);
+                circularSeekBar.setProgress(progress);
                 shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
             }
 
@@ -82,9 +88,35 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+
+        TextView motivationMessage = findViewById(R.id.motivation);
+
+        ArrayList<String> sampleMessages = new ArrayList<>();
+        sampleMessages.add("Stop phubbing");
+        sampleMessages.add("Return to your work");
+        sampleMessages.add("Do not use your phone!");
+        sampleMessages.add("Put your phone down!");
+        sampleMessages.add("Focus on your tasks!");
+        sampleMessages.add("Stay productive!");
+        sampleMessages.add("Break the phone habit!");
+        sampleMessages.add("Time to work, not scroll!");
+        sampleMessages.add("Don't let your phone distract you!");
+        sampleMessages.add("Stay focused, stay sharp!");
+        sampleMessages.add("Your work needs you more!");
+        sampleMessages.add("Eyes on your goals, not your screen!");
+        sampleMessages.add("Be present, not distracted!");
+
+        motivationMessage.setText(sampleMessages.get((int) (Math.random() * 12)));
+
+    }
+
     private void startCountdown(CircularSeekBar circularSeekBar) {
         circularSeekBar.setDisablePointer(true);
         if (progress % 60 != 0) progress -= (progress % 60);
+        if (progress % 5 != 0) progress -= (progress % 5);
 
         handler.postDelayed(new Runnable() {
             @Override

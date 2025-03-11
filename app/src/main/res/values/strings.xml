@@ -2,6 +2,13 @@
     <string name="app_name">TameMind</string>
     <string name="hello_world">Hello world</string>
     <string name="select_time">Select Time</string>
-    <string name="startTime">0</string>
+    <string name="startTime">0:00</string>
     <string name="feed">Feed</string>
+
+    <string name="mainMenu">Home</string>
+    <string name="farmMenu">Farm</string>
+    <string name="open">Open</string>
+    <string name="close">Close</string>
+    <string name="start_farmnig_today">Start farming today!</string>
+
 </resources>
