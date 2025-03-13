@@ -4,27 +4,20 @@
     tools:showIn="navigation_view">
 
     <group android:checkableBehavior="single">
-
         <item
             android:id="@+id/nav_home"
-            android:icon="@drawable/home_icon"
-            android:title="@string/mainMenu"
-            />
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/mainMenu" />
 
         <item
             android:id="@+id/nav_farm"
-            android:icon="@drawable/farm_icon"
-            android:title="@string/farmMenu"/>
-
+            android:icon="@drawable/ic_launcher_background"
+            android:title="@string/farmMenu" />
     </group>
+
     <item
-        android:title="">
-        <menu>
-            <item
-                android:id="@+id/nav_logout"
-                android:icon="@drawable/ic_launcher_background"
-                android:title="@string/logout"/>
-        </menu>
-    </item>
+        android:id="@+id/nav_logout"
+        android:icon="@drawable/ic_launcher_background"
+        android:title="@string/logout" />
 
 </menu>

@@ -15,6 +15,10 @@
 
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
     </style>
+    <style name="NavView" parent="Theme.AppCompat.NoActionBar">
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
 
     <style name="Theme.TameMind" parent="Base.Theme.TameMind" />
     <style name="Theme.TameMind.NoActionBar">

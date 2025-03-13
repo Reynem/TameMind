@@ -4,9 +4,11 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,10 +19,14 @@ import androidx.core.view.WindowInsetsCompat;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
+import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import android.animation.ObjectAnimator;
+import android.view.animation.DecelerateInterpolator;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -48,6 +54,20 @@ public class MainActivity extends AppCompatActivity {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
             }
         }
+
+        NavigationView navigationView = findViewById(R.id.navigationMenu);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                return false;
+            }
+        });
+
+        ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
+        closeButton.setOnClickListener(v -> hideNavigationMenu());
+
+        ImageView openButton = findViewById(R.id.openNav);
+        openButton.setOnClickListener(v -> showNavigationMenu());
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
@@ -91,23 +111,27 @@ public class MainActivity extends AppCompatActivity {
         super.onRestart();
 
         TextView motivationMessage = findViewById(R.id.motivation);
+        if (motivationMessage != null) {
+            ArrayList<String> sampleMessages = new ArrayList<>();
+            sampleMessages.add("Stop phubbing");
+            sampleMessages.add("Return to your work");
+            sampleMessages.add("Do not use your phone!");
+            sampleMessages.add("Put your phone down!");
+            sampleMessages.add("Focus on your tasks!");
+            sampleMessages.add("Stay productive!");
+            sampleMessages.add("Break the phone habit!");
+            sampleMessages.add("Time to work, not scroll!");
+            sampleMessages.add("Don't let your phone distract you!");
+            sampleMessages.add("Stay focused, stay sharp!");
+            sampleMessages.add("Your work needs you more!");
+            sampleMessages.add("Eyes on your goals, not your screen!");
+            sampleMessages.add("Be present, not distracted!");
 
-        ArrayList<String> sampleMessages = new ArrayList<>();
-        sampleMessages.add("Stop phubbing");
-        sampleMessages.add("Return to your work");
-        sampleMessages.add("Do not use your phone!");
-        sampleMessages.add("Put your phone down!");
-        sampleMessages.add("Focus on your tasks!");
-        sampleMessages.add("Stay productive!");
-        sampleMessages.add("Break the phone habit!");
-        sampleMessages.add("Time to work, not scroll!");
-        sampleMessages.add("Don't let your phone distract you!");
-        sampleMessages.add("Stay focused, stay sharp!");
-        sampleMessages.add("Your work needs you more!");
-        sampleMessages.add("Eyes on your goals, not your screen!");
-        sampleMessages.add("Be present, not distracted!");
-
-        motivationMessage.setText(sampleMessages.get((int) (Math.random() * 12)));
+            motivationMessage.setText(sampleMessages.get((int) (Math.random() * 12)));
+        }
+         else {
+            android.util.Log.e("MainActivity", "TextView motivation not found in layout.");
+        }
 
     }
 
@@ -139,6 +163,22 @@ public class MainActivity extends AppCompatActivity {
     private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
         notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
+    }
+
+    private void hideNavigationMenu() {
+        NavigationView navigationView = findViewById(R.id.navigationMenu);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", 0, -navigationView.getWidth());
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
+
+    private void showNavigationMenu() {
+        NavigationView navigationView = findViewById(R.id.navigationMenu);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", -navigationView.getWidth(), 0);
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
     }
 
 
