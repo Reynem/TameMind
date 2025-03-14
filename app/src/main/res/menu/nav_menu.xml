@@ -18,6 +18,6 @@
     <item
         android:id="@+id/nav_logout"
         android:icon="@drawable/ic_launcher_background"
-        android:title="@string/logout" />
+        android:title="@string/account" />
 
 </menu>

@@ -1,12 +1,15 @@
 package com.reynem.tamemind;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -55,7 +58,28 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         navigationManager = new NavigationManager(navigationView);
-        navigationView.setNavigationItemSelectedListener(item -> false);
+        navigationManager.hideNavigationView();
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_home){
+
+                    return true;
+                }
+                else if (id == R.id.nav_farm){
+
+                    return true;
+                }
+                else if (id == R.id.nav_logout){
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                    return true;
+                }
+                return false;
+            }
+        });
 
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
         closeButton.setOnClickListener(v -> hideNavigationView());

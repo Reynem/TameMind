@@ -9,7 +9,9 @@ public class NavigationManager implements NavigationListener{
 
     public NavigationManager(NavigationView navigationView) {
         this.navigationView = navigationView;
+        hideNavigationView();
     }
+
 
     @Override
     public void showNavigationView() {
