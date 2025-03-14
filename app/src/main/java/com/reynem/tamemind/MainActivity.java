@@ -20,6 +20,7 @@ import androidx.core.view.WindowInsetsCompat;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import com.google.android.material.navigation.NavigationView;
+import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.ImageView;
@@ -30,7 +31,7 @@ import android.view.animation.DecelerateInterpolator;
 import java.util.ArrayList;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NavigationListener {
     private final Handler handler = new Handler();
     private float progress;
     private TextView shownTime;
@@ -64,10 +65,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
-        closeButton.setOnClickListener(v -> hideNavigationMenu());
+        closeButton.setOnClickListener(v -> hideNavigationView());
 
         ImageView openButton = findViewById(R.id.openNav);
-        openButton.setOnClickListener(v -> showNavigationMenu());
+        openButton.setOnClickListener(v -> showNavigationView());
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
@@ -165,15 +166,9 @@ public class MainActivity extends AppCompatActivity {
         notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
     }
 
-    private void hideNavigationMenu() {
-        NavigationView navigationView = findViewById(R.id.navigationMenu);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", 0, -navigationView.getWidth());
-        animator.setDuration(300);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();
-    }
 
-    private void showNavigationMenu() {
+    @Override
+    public void showNavigationView() {
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", -navigationView.getWidth(), 0);
         animator.setDuration(300);
@@ -181,5 +176,12 @@ public class MainActivity extends AppCompatActivity {
         animator.start();
     }
 
-
+    @Override
+    public void hideNavigationView() {
+        NavigationView navigationView = findViewById(R.id.navigationMenu);
+        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", 0, -navigationView.getWidth());
+        animator.setDuration(300);
+        animator.setInterpolator(new DecelerateInterpolator());
+        animator.start();
+    }
 }
