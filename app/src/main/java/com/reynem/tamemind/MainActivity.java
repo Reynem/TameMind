@@ -4,11 +4,9 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -21,13 +19,11 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.navigation.NavigationListener;
+import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import android.animation.ObjectAnimator;
-import android.view.animation.DecelerateInterpolator;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -36,6 +32,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     private float progress;
     private TextView shownTime;
     private Button startTimer;
+    private NavigationManager navigationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,12 +54,8 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         }
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                return false;
-            }
-        });
+        navigationManager = new NavigationManager(navigationView);
+        navigationView.setNavigationItemSelectedListener(item -> false);
 
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
         closeButton.setOnClickListener(v -> hideNavigationView());
@@ -169,19 +162,11 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
     @Override
     public void showNavigationView() {
-        NavigationView navigationView = findViewById(R.id.navigationMenu);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", -navigationView.getWidth(), 0);
-        animator.setDuration(300);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();
+        navigationManager.showNavigationView();
     }
 
     @Override
     public void hideNavigationView() {
-        NavigationView navigationView = findViewById(R.id.navigationMenu);
-        ObjectAnimator animator = ObjectAnimator.ofFloat(navigationView, "translationX", 0, -navigationView.getWidth());
-        animator.setDuration(300);
-        animator.setInterpolator(new DecelerateInterpolator());
-        animator.start();
+        navigationManager.hideNavigationView();
     }
 }
