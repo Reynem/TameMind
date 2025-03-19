@@ -85,7 +85,10 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         closeButton.setOnClickListener(v -> hideNavigationView());
 
         ImageView openButton = findViewById(R.id.openNav);
-        openButton.setOnClickListener(v -> showNavigationView());
+        openButton.setOnClickListener(v -> {
+            navigationView.setVisibility(NavigationView.VISIBLE);
+            showNavigationView();
+        });
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);

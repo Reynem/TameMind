@@ -59,7 +59,12 @@ public class LoginActivity extends AppCompatActivity implements NavigationListen
         closeButton.setOnClickListener(v -> hideNavigationView());
 
         ImageView openButton = findViewById(R.id.openNav);
-        openButton.setOnClickListener(v -> showNavigationView());
+        openButton.setOnClickListener(v -> {
+            navigationView.setVisibility(NavigationView.VISIBLE);
+            showNavigationView();
+        });
+
+
 
     }
 
