@@ -3,6 +3,7 @@ package com.reynem.tamemind;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MenuItem;
+import android.widget.EditText;
 import android.widget.ImageView;
 
 import androidx.activity.EdgeToEdge;
@@ -13,12 +14,15 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
 
 public class LoginActivity extends AppCompatActivity implements NavigationListener {
     private NavigationView navigationView;
     private NavigationManager navigationManager;
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,8 +64,21 @@ public class LoginActivity extends AppCompatActivity implements NavigationListen
             showNavigationView();
         });
 
+        mAuth = FirebaseAuth.getInstance();
 
+        EditText emailInput = findViewById(R.id.emailInput);
+        EditText passwordInput = findViewById(R.id.passwordInput);
+        String email = emailInput.getText().toString();
+        String password = passwordInput.getText().toString();
 
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        boolean isUserLogged = (currentUser != null);
     }
 
     @Override
