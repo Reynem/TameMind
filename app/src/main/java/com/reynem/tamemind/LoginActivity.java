@@ -47,11 +47,7 @@ public class LoginActivity extends AppCompatActivity implements NavigationListen
 
                     return true;
                 }
-                else if (id == R.id.nav_logout){
-
-                    return true;
-                }
-                return false;
+                else return id == R.id.nav_logout;
             }
         });
 
