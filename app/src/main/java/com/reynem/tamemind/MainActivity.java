@@ -73,9 +73,6 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
                     return true;
                 }
                 else if (id == R.id.nav_logout){
-                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
-                    startActivity(intent);
-                    return true;
                 }
                 return false;
             }

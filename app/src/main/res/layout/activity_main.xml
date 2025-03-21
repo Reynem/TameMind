@@ -77,15 +77,15 @@
 
     <ImageView
         android:id="@+id/openNav"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="start"
         android:layout_marginStart="15dp"
         android:layout_marginTop="15dp"
         android:contentDescription="@string/close"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@android:drawable/alert_dark_frame"
+        app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
         tools:textAlignment="textStart" />
 
     <com.google.android.material.navigation.NavigationView
