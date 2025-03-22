@@ -30,5 +30,6 @@
     <string name="enter">Enter</string>
     <string name="submit">Submit</string>
     <string name="insert_pin">Insert PIN</string>
+    <string name="No_access">Доступ ограничен</string>
 
 </resources>

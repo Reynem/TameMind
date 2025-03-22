@@ -1,6 +1,7 @@
 package com.reynem.tamemind;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,8 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     private TextView shownTime;
     private Button startTimer;
     private NavigationManager navigationManager;
+    private Runnable timerRunnable;
+    private boolean isTimerActive = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +58,9 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
             }
         }
+
+        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        startActivity(intent);
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         navigationManager = new NavigationManager(navigationView);
@@ -154,29 +160,56 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     }
 
     private void startCountdown(CircularSeekBar circularSeekBar) {
-        circularSeekBar.setDisablePointer(true);
-        if (progress % 60 != 0) progress -= (progress % 60);
-        if (progress % 5 != 0) progress -= (progress % 5);
+        if (isTimerActive) {
+            handler.removeCallbacks(timerRunnable);
+        }
+        isTimerActive = true;
 
-        handler.postDelayed(new Runnable() {
+        int minutes = (int) (progress / 60);
+        setBlockTime(minutes);
+
+        circularSeekBar.setDisablePointer(true);
+        startTimer.setVisibility(View.INVISIBLE);
+
+        timerRunnable = new Runnable() {
             @Override
             public void run() {
-                if (progress > 1) {
+                if (progress > 0) {
                     progress--;
                     int minutes = (int) (progress / 60);
                     int seconds = (int) (progress % 60);
                     circularSeekBar.setProgress(minutes);
                     shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
+
                     handler.postDelayed(this, 1000);
                 } else {
-                    sendSuccessNotification();
-                    circularSeekBar.setDisablePointer(false);
-                    startTimer.setVisibility(View.VISIBLE);
+                    finishTimer(circularSeekBar);
                 }
             }
-        }, 1000);
+        };
 
+        handler.postDelayed(timerRunnable, 1000);
     }
+
+    private void finishTimer(CircularSeekBar circularSeekBar) {
+        isTimerActive = false;
+        clearBlockTime();
+        circularSeekBar.setDisablePointer(false);
+        startTimer.setVisibility(View.VISIBLE);
+        sendSuccessNotification();
+    }
+
+    private void setBlockTime(int minutes) {
+        long blockUntil = System.currentTimeMillis() + ((long) minutes * 60 * 1000);
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        prefs.edit().putLong("block_until", blockUntil).apply();
+    }
+
+    private void clearBlockTime() {
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        prefs.edit().remove("block_until").apply();
+    }
+
 
     private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
