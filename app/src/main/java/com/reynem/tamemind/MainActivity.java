@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     private final Handler handler = new Handler();
     private float progress;
     private TextView shownTime;
-    private Button startTimer;
+    private Button startTimer, endTimer;
     private NavigationManager navigationManager;
     private Runnable timerRunnable;
     private boolean isTimerActive = false;
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
+        endTimer = findViewById(R.id.endTimer);
         shownTime = findViewById(R.id.timeLeft);
 
         circularSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
@@ -118,14 +119,19 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             }
         });
 
-
+        endTimer.setOnClickListener(v -> {
+            finishTimer(circularSeekBar);
+            progress = 0;
+        });
 
         startTimer.setOnClickListener(v -> {
             progress = circularSeekBar.getProgress() * 60;
             shownTime = findViewById(R.id.timeLeft);
             startTimer.setVisibility(View.INVISIBLE);
+            endTimer.setVisibility(View.VISIBLE);
             startCountdown(circularSeekBar);
         });
+
 
 
     }

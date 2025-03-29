@@ -75,6 +75,20 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
 
+    <Button
+        android:id="@+id/endTimer"
+        android:layout_width="wrap_content"
+        android:layout_height="60dp"
+        android:layout_marginStart="160dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="160dp"
+        android:text="@string/select_time"
+        android:visibility="invisible"
+        app:cornerRadius="5dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
+
     <ImageView
         android:id="@+id/openNav"
         android:layout_width="40dp"
