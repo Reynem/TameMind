@@ -6,11 +6,9 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -24,6 +22,7 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
+import com.reynem.tamemind.settings.SettingsActivity;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.ImageView;
@@ -65,23 +64,19 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         navigationManager = new NavigationManager(navigationView);
         navigationManager.hideNavigationView();
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                int id = item.getItemId();
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
 
-                if (id == R.id.nav_home){
+            if (id == R.id.nav_home){
 
-                    return true;
-                }
-                else if (id == R.id.nav_farm){
-
-                    return true;
-                }
-                else if (id == R.id.nav_logout){
-                }
-                return false;
+                return true;
             }
+            else if (id == R.id.nav_farm){
+                Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
+                startActivity(intent1);
+                return true;
+            }
+            return false;
         });
 
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
