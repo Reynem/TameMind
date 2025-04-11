@@ -1,11 +1,14 @@
 package com.reynem.tamemind;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
@@ -20,6 +23,7 @@ import androidx.core.view.WindowInsetsCompat;
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import com.google.android.material.navigation.NavigationView;
+import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
@@ -28,6 +32,7 @@ import android.Manifest;
 import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
+import android.provider.Settings;
 import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements NavigationListener {
@@ -58,8 +63,11 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             }
         }
 
-        Intent intent = new Intent(android.provider.Settings.ACTION_ACCESSIBILITY_SETTINGS);
-        startActivity(intent);
+        if (!isAccessibilityServiceEnabled(this, AppBlockerService.class)) {
+            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        }
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         navigationManager = new NavigationManager(navigationView);
@@ -215,6 +223,29 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
         notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
+    }
+
+    public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityServiceClass) {
+        ComponentName expectedComponentName = new ComponentName(context, accessibilityServiceClass);
+
+        String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+        if (enabledServicesSetting == null) {
+            return false;
+        }
+
+        TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
+        colonSplitter.setString(enabledServicesSetting);
+
+        while (colonSplitter.hasNext()) {
+            String componentNameString = colonSplitter.next();
+            ComponentName enabledService = ComponentName.unflattenFromString(componentNameString);
+
+            if (enabledService != null && enabledService.equals(expectedComponentName)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
 

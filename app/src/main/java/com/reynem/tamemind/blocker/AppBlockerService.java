@@ -6,9 +6,20 @@ import android.content.SharedPreferences;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-public class AppBlockerService extends AccessibilityService {
-    private static final String BLOCKED_APP = "com.google.android.youtube"; // temporary constant
+import java.util.Arrays;
+import java.util.List;
 
+public class AppBlockerService extends AccessibilityService {
+    private final List<String> blockedApps = Arrays.asList(
+            "com.instagram.android",
+            "com.facebook.katana",
+            "com.google.android.youtube",
+            "com.zhiliaoapp.musically", // TikTok
+            "com.twitter.android",
+            "com.snapchat.android",
+            "com.vkontakte.android",
+            "org.telegram.messenger"
+    );
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
@@ -20,8 +31,12 @@ public class AppBlockerService extends AccessibilityService {
 
         if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
             String packageName = event.getPackageName().toString();
-            if (event.getPackageName() != null && packageName.equals(BLOCKED_APP)) {
-                showBlockScreen();
+            if (event.getPackageName() != null) {
+                for (String blockedApp: blockedApps){
+                    if (packageName.equals(blockedApp)){
+                        showBlockScreen();
+                    }
+                }
             }
         }
     }

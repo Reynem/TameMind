@@ -3,7 +3,6 @@ package com.reynem.tamemind.settings;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.ImageView;
-
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
@@ -18,7 +17,6 @@ import com.reynem.tamemind.navigation.NavigationManager;
 
 public class SettingsActivity extends AppCompatActivity implements NavigationListener {
     private NavigationManager navigationManager;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,11 +39,7 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
                 startActivity(intent);
                 return true;
             }
-            else if (id == R.id.nav_farm){
-
-                return true;
-            }
-            return false;
+            else return id == R.id.nav_farm;
         });
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
         closeButton.setOnClickListener(v -> hideNavigationView());
