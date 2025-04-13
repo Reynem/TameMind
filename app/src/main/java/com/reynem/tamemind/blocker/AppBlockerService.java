@@ -3,39 +3,46 @@ package com.reynem.tamemind.blocker;
 import android.accessibilityservice.AccessibilityService;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-import java.util.Arrays;
-import java.util.List;
-
 public class AppBlockerService extends AccessibilityService {
-    private final List<String> blockedApps = Arrays.asList(
-            "com.instagram.android",
-            "com.facebook.katana",
-            "com.google.android.youtube",
-            "com.zhiliaoapp.musically", // TikTok
-            "com.twitter.android",
-            "com.snapchat.android",
-            "com.vkontakte.android",
-            "org.telegram.messenger"
-    );
+    private static final String HOME_PACKAGE_NAME = "com.android.launcher";
+    private static final String HOME_PACKAGE_NAME_NEXUS = "com.google.android.apps.nexuslauncher";
+
+    private static final String SETTINGS_PACKAGE_NAME = "com.android.settings";
+
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         long blockUntil = prefs.getLong("block_until", 0);
+        long currentTime = System.currentTimeMillis();
 
-        if (System.currentTimeMillis() >= blockUntil) {
-            return;
-        }
-
-        if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+        Log.d("AppBlockerService", "Accessibility Event: " + event.getEventType());
+        if (event.getPackageName() != null) {
             String packageName = event.getPackageName().toString();
-            if (event.getPackageName() != null) {
-                for (String blockedApp: blockedApps){
-                    if (packageName.equals(blockedApp)){
-                        showBlockScreen();
-                    }
+            Log.d("AppBlockerService", "Package Name: " + packageName);
+
+            String myPackageName = getApplicationContext().getPackageName();
+
+            Log.d("AppBlockerService", "Current Time: " + currentTime);
+            Log.d("AppBlockerService", "Block Until: " + blockUntil);
+
+            if (currentTime >= blockUntil) {
+                Log.d("AppBlockerService", "Blocking is disabled (time)");
+                return;
+            }
+
+            if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
+                Log.d("AppBlockerService", "Window state changed for: " + packageName);
+
+                // Проверяем, не является ли запущенное приложение TameMind или настройками
+                if (!packageName.equals(myPackageName) && !packageName.equals(SETTINGS_PACKAGE_NAME)
+                        && !packageName.equals(HOME_PACKAGE_NAME) && !packageName.equals(HOME_PACKAGE_NAME_NEXUS)) {
+                    showBlockScreen();
+                } else {
+                    Log.d("AppBlockerService", "Skipping block for: " + packageName);
                 }
             }
         }
