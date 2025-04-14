@@ -24,6 +24,7 @@ import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.blocker.AppBlockerService;
+import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
@@ -79,9 +80,14 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
                 return true;
             }
-            else if (id == R.id.nav_farm){
+            else if (id == R.id.nav_settings){
                 Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
                 startActivity(intent1);
+                return true;
+            }
+            else if (id == R.id.nav_farm){
+                Intent intent2 = new Intent(MainActivity.this, FarmActivity.class);
+                startActivity(intent2);
                 return true;
             }
             return false;
