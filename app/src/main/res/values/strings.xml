@@ -33,5 +33,6 @@
     <string name="No_access">Доступ ограничен</string>
     <string name="return_toMainActivity">Return</string>
     <string name="settings">Settings</string>
+    <string name="end_timer">End timer</string>
 
 </resources>

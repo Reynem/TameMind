@@ -7,27 +7,24 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.Toast;
 
-public class AppBlockerService extends AccessibilityService {
-    private static final String HOME_PACKAGE_NAME = "com.android.launcher";
-    private static final String HOME_PACKAGE_NAME_NEXUS = "com.google.android.apps.nexuslauncher";
+import java.util.HashSet;
+import java.util.Set;
 
-    private static final String SETTINGS_PACKAGE_NAME = "com.android.settings";
+public class AppBlockerService extends AccessibilityService {
+
+    private static final String PREFS_NAME = "app_prefs";
+    private static final String KEY_ALLOWED_APPS = "allowed_apps";
+    private static final String KEY_BLOCK_UNTIL = "block_until";
 
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        long blockUntil = prefs.getLong("block_until", 0);
+        SharedPreferences prefs = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+        long blockUntil = prefs.getLong(KEY_BLOCK_UNTIL, 0);
         long currentTime = System.currentTimeMillis();
 
-        Log.d("AppBlockerService", "Accessibility Event: " + event.getEventType());
         if (event.getPackageName() != null) {
             String packageName = event.getPackageName().toString();
-            Log.d("AppBlockerService", "Package Name: " + packageName);
-
             String myPackageName = getApplicationContext().getPackageName();
-
-            Log.d("AppBlockerService", "Current Time: " + currentTime);
-            Log.d("AppBlockerService", "Block Until: " + blockUntil);
 
             if (currentTime >= blockUntil) {
                 Log.d("AppBlockerService", "Blocking is disabled (time)");
@@ -35,19 +32,16 @@ public class AppBlockerService extends AccessibilityService {
             }
 
             if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED) {
-                Log.d("AppBlockerService", "Window state changed for: " + packageName);
+                Set<String> allowedApps = prefs.getStringSet(KEY_ALLOWED_APPS, getDefaultAllowedApps());
 
-                // Проверяем, не является ли запущенное приложение TameMind или настройками
-                if (!packageName.equals(myPackageName) && !packageName.equals(SETTINGS_PACKAGE_NAME)
-                        && !packageName.equals(HOME_PACKAGE_NAME) && !packageName.equals(HOME_PACKAGE_NAME_NEXUS)) {
+                if (!allowedApps.contains(packageName)) {
                     showBlockScreen();
                 } else {
-                    Log.d("AppBlockerService", "Skipping block for: " + packageName);
+                    Log.d("AppBlockerService", "Skipping block for allowed app: " + packageName);
                 }
             }
         }
     }
-
 
     private void showBlockScreen() {
         Intent intent = new Intent(this, BlockedActivity.class);
@@ -58,5 +52,26 @@ public class AppBlockerService extends AccessibilityService {
     @Override
     public void onInterrupt() {
         Toast.makeText(this, "Сервис остановлен", Toast.LENGTH_SHORT).show();
+    }
+
+    public static void addAllowedApp(SharedPreferences prefs, String packageName) {
+        Set<String> allowedApps = new HashSet<>(prefs.getStringSet(KEY_ALLOWED_APPS, getDefaultAllowedApps()));
+        allowedApps.add(packageName);
+        prefs.edit().putStringSet(KEY_ALLOWED_APPS, allowedApps).apply();
+    }
+
+    public static void removeAllowedApp(SharedPreferences prefs, String packageName) {
+        Set<String> allowedApps = new HashSet<>(prefs.getStringSet(KEY_ALLOWED_APPS, getDefaultAllowedApps()));
+        allowedApps.remove(packageName);
+        prefs.edit().putStringSet(KEY_ALLOWED_APPS, allowedApps).apply();
+    }
+
+    public static Set<String> getDefaultAllowedApps() {
+        Set<String> defaultApps = new HashSet<>();
+        defaultApps.add("com.reynem.tamemind"); // My application
+        defaultApps.add("com.android.settings"); // Settings
+        defaultApps.add("com.android.launcher"); // Standart launcher
+        defaultApps.add("com.google.android.apps.nexuslauncher"); // Emulator`s launcher
+        return defaultApps;
     }
 }
