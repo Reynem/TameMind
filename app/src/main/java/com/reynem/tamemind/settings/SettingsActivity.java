@@ -1,12 +1,16 @@
 package com.reynem.tamemind.settings;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,15 +26,28 @@ import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Set;
+import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity implements NavigationListener {
-    private EditText editPackageName;
+    private EditText editAppName;
     private TextView textAllowedApps;
     private SharedPreferences prefs;
     private NavigationManager navigationManager;
+    private final Map<String, String> appNameToPackageMap = new HashMap<>() {{
+        put("youtube", "com.google.android.youtube");
+        put("telegram", "org.telegram.messenger");
+        put("whatsapp", "com.whatsapp");
+        put("instagram", "com.instagram.android");
+        put("chrome", "com.android.chrome");
+        put("google", "com.google.android.googlequicksearchbox");
+        put("facebook", "com.facebook.katana");
+        put("vk", "com.vkontakte.android");
+    }};
 
-
+    @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,31 +86,45 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
             showNavigationView();
         });
 
-        editPackageName = findViewById(R.id.edit_package_name);
+        editAppName = findViewById(R.id.edit_package_name);
         Button btnAdd = findViewById(R.id.btn_add);
         Button btnRemove = findViewById(R.id.btn_remove);
         textAllowedApps = findViewById(R.id.text_allowed_apps);
-
         prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
 
+        @SuppressLint("CutPasteId") AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(
+                this,
+                android.R.layout.simple_dropdown_item_1line,
+                new ArrayList<>(appNameToPackageMap.keySet())
+        );
+        autoCompleteTextView.setAdapter(adapter);
+
         btnAdd.setOnClickListener(v -> {
-            String pkg = editPackageName.getText().toString().trim();
-            if (!pkg.isEmpty()) {
+            String input = editAppName.getText().toString().trim().toLowerCase();
+            String pkg = appNameToPackageMap.get(input);
+            if (pkg != null) {
                 AppBlockerService.addAllowedApp(prefs, pkg);
                 updateAllowedAppsText();
+                Toast.makeText(this, input + " разрешено", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
         });
 
         btnRemove.setOnClickListener(v -> {
-            String pkg = editPackageName.getText().toString().trim();
-            if (!pkg.isEmpty()) {
+            String input = editAppName.getText().toString().trim().toLowerCase();
+            String pkg = appNameToPackageMap.get(input);
+            if (pkg != null) {
                 AppBlockerService.removeAllowedApp(prefs, pkg);
                 updateAllowedAppsText();
+                Toast.makeText(this, input + " запрещено", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
         });
 
         updateAllowedAppsText();
-
 
     }
 
@@ -105,6 +136,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
         }
         textAllowedApps.setText(builder.toString());
     }
+
+
 
     @Override
     public void showNavigationView() {
