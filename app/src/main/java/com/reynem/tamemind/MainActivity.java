@@ -218,6 +218,9 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         long blockUntil = System.currentTimeMillis() + ((long) minutes * 60 * 1000);
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         prefs.edit().putLong("block_until", blockUntil).apply();
+        long allTime = prefs.getLong("get_all_time", 0L);
+        allTime += blockUntil;
+        prefs.edit().putLong("get_all_time", allTime).apply();
     }
 
     private void clearBlockTime() {

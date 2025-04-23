@@ -24,7 +24,7 @@
         android:id="@+id/timeHas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/app_name"
+        android:text="@string/your_farm"
         android:textSize="30sp"
         app:layout_constraintBottom_toBottomOf="@id/animalImage"
         app:layout_constraintEnd_toEndOf="parent"

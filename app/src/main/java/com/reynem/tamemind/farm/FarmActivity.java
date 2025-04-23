@@ -1,8 +1,11 @@
 package com.reynem.tamemind.farm;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -18,6 +21,7 @@ import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
 
 public class FarmActivity extends AppCompatActivity implements NavigationListener {
+
     private NavigationManager navigationManager;
 
     @Override
@@ -57,6 +61,24 @@ public class FarmActivity extends AppCompatActivity implements NavigationListene
             navigationView.setVisibility(NavigationView.VISIBLE);
             showNavigationView();
         });
+
+        TextView animalName = findViewById(R.id.animalName);
+        ImageView animalImage = findViewById(R.id.animalImage);
+        ProgressBar progressAnimal = findViewById(R.id.progressAnimal);
+
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        double progress = (double) prefs.getLong("get_all_time", 0L) / 40000;
+        if (progress >= 1){
+            animalName.setText(R.string.elephant);
+        } else if (progress > 0.8){
+            animalName.setText(R.string.cow);
+        }else if (progress > 0.4){
+            animalName.setText(R.string.chicken);
+        }else {
+            animalName.setText(R.string.mouse);
+        }
+        progressAnimal.setMax(100);
+        progressAnimal.setProgress((int)progress);
 
     }
 

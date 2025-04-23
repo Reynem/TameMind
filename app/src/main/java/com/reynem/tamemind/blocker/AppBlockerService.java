@@ -24,7 +24,6 @@ public class AppBlockerService extends AccessibilityService {
 
         if (event.getPackageName() != null) {
             String packageName = event.getPackageName().toString();
-            String myPackageName = getApplicationContext().getPackageName();
 
             if (currentTime >= blockUntil) {
                 Log.d("AppBlockerService", "Blocking is disabled (time)");

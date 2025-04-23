@@ -6,16 +6,73 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".settings.SettingsActivity"
-    android:background="?attr/colorSurface" android:padding="16dp"> <ImageView
-    android:id="@+id/openNav"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_gravity="start"
-    android:layout_marginStart="0dp" android:layout_marginTop="0dp"  android:contentDescription="@string/close"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
-    tools:textAlignment="textStart" />
+    android:background="?attr/colorSurface" android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/openNav"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
+        tools:textAlignment="textStart" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/layout_package_name"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu" android:layout_width="0dp" android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:hint="@string/android_app"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/openNav">
+
+        <AutoCompleteTextView
+            android:id="@+id/edit_package_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:autofillHints=""
+            android:completionThreshold="1"
+            android:hint="@string/android_app"
+            android:inputType="text"
+            tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_add"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/Add"
+        app:layout_constraintEnd_toStartOf="@+id/btn_remove" app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintHorizontal_chainStyle="packed" app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/layout_package_name" />
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btn_remove"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp" android:text="@string/Remove"
+        app:layout_constraintBottom_toBottomOf="@+id/btn_add" app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/btn_add" app:layout_constraintTop_toTopOf="@+id/btn_add" />
+
+    <TextView
+        android:id="@+id/text_allowed_apps"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="32dp"
+        android:text="@string/AllowedApps"
+        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+        android:textColor="?attr/colorOnSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn_add" />
 
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationMenu"
@@ -28,46 +85,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/nav_menu" />
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/layout_package_name"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu" android:layout_width="0dp" android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:hint="@string/android_app"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/openNav">
-        <AutoCompleteTextView
-            android:hint="@string/android_app"
-        android:id="@+id/edit_package_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:completionThreshold="1"
-        android:inputType="text"
-        android:autofillHints=""
-            tools:ignore="LabelFor" />
-    </com.google.android.material.textfield.TextInputLayout>
 
 
-    <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_add"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/Add"
-        app:layout_constraintEnd_toStartOf="@+id/btn_remove" app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintHorizontal_chainStyle="packed" app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/layout_package_name" /> <com.google.android.material.button.MaterialButton
-        android:id="@+id/btn_remove"
-        style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp" android:text="@string/Remove"
-        app:layout_constraintBottom_toBottomOf="@+id/btn_add" app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/btn_add" app:layout_constraintTop_toTopOf="@+id/btn_add" /> <TextView
-        android:id="@+id/text_allowed_apps"
-        android:layout_width="0dp" android:layout_height="wrap_content"
-        android:layout_marginTop="32dp" android:text="@string/AllowedApps"
-        android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6" android:textColor="?attr/colorOnSurface"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_add" /> </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

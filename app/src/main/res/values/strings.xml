@@ -39,5 +39,10 @@
     <string name="Remove">Удалить</string>
     <string name="AllowedApps">Разрешённые приложения:</string>
     <string name="animal">Animal</string>
+    <string name="your_farm">Your farm</string>
+    <string name="elephant">Elephant</string>
+    <string name="cow">Cow</string>
+    <string name="chicken">Chicken</string>
+    <string name="mouse">Mouse</string>
 
 </resources>

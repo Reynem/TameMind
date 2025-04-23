@@ -7,16 +7,20 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:background="?attr/colorSurface" android:padding="16dp"> <ImageView
-    android:id="@+id/openNav"
-    android:layout_width="40dp"
-    android:layout_height="40dp"
-    android:layout_gravity="start"
-    android:layout_marginStart="0dp" android:layout_marginTop="0dp"  android:contentDescription="@string/close"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintTop_toTopOf="parent"
-    app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
-    tools:textAlignment="textStart" />
+    android:background="?attr/colorSurface" android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/openNav"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="start"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="15dp"
+        android:contentDescription="@string/close"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
+        tools:textAlignment="textStart" />
 
 
     <me.tankery.lib.circularseekbar.CircularSeekBar
