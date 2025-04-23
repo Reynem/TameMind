@@ -38,5 +38,6 @@
     <string name="Add">Добавить</string>
     <string name="Remove">Удалить</string>
     <string name="AllowedApps">Разрешённые приложения:</string>
+    <string name="animal">Animal</string>
 
 </resources>
