@@ -63,19 +63,24 @@ public class FarmActivity extends AppCompatActivity implements NavigationListene
         });
 
         TextView animalName = findViewById(R.id.animalName);
-        ImageView animalImage = findViewById(R.id.animalImage);
+        ImageView  animalImage = findViewById(R.id.animalImage);
         ProgressBar progressAnimal = findViewById(R.id.progressAnimal);
 
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         double progress = (double) prefs.getLong("get_all_time", 0L) / 40000;
         if (progress >= 1){
             animalName.setText(R.string.elephant);
+            animalImage.setImageResource(R.drawable.elephant);
         } else if (progress > 0.8){
             animalName.setText(R.string.cow);
+            animalImage.setImageResource(R.drawable.cow);
+
         }else if (progress > 0.4){
             animalName.setText(R.string.chicken);
+            animalImage.setImageResource(R.drawable.chicken);
         }else {
             animalName.setText(R.string.mouse);
+            animalImage.setImageResource(R.drawable.mouse);
         }
         progressAnimal.setMax(100);
         progressAnimal.setProgress((int)progress);
