@@ -47,6 +47,17 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
         put("vk", "com.vkontakte.android");
     }};
 
+    private final Map<String, String> appPackageToNameMap = new HashMap<>() {{
+        put("com.google.android.youtube", "Youtube");
+        put("org.telegram.messenger", "Telegram");
+        put("com.whatsapp", "WhatsApp");
+        put("com.instagram.android", "Instagram");
+        put("com.android.chrome", "Chrome");
+        put("com.google.android.googlequicksearchbox", "Google");
+        put("com.facebook.katana", "Facebook");
+        put("com.vkontakte.android", "VK");
+    }};
+
     @SuppressLint("CutPasteId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,7 +143,8 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
         Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
         StringBuilder builder = new StringBuilder("Allowed apps:\n");
         for (String app : allowedApps) {
-            builder.append("• ").append(app).append("\n");
+            if (appPackageToNameMap.get(app) == null) continue;
+            builder.append("• ").append(appPackageToNameMap.get(app)).append("\n");
         }
         textAllowedApps.setText(builder.toString());
     }
