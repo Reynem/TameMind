@@ -14,9 +14,11 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -88,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             else if (id == R.id.nav_farm){
                 Intent intent2 = new Intent(MainActivity.this, FarmActivity.class);
                 startActivity(intent2);
+                return true;
+            }
+            else if (id == R.id.nav_language){
+                navigationManager.showLanguageSelectionDialog();
                 return true;
             }
             return false;

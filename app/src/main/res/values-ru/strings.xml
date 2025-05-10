@@ -1,0 +1,49 @@
+<resources>
+    <string name="app_name">TameMind</string>
+    <string name="hello_world">Привет, мир</string>
+    <string name="select_time">Выберите время</string>
+    <string name="feed">Лента</string>
+
+    <string name="mainMenu">Главная</string>
+    <string name="farmMenu">Ферма</string>
+    <string name="open">Открыть</string>
+    <string name="close">Закрыть</string>
+    <string name="start_farmnig_today">Начните фермерство сегодня!</string>
+    <string name="hello_blank_fragment">Привет, пустой фрагмент</string>
+    <string name="logout">Выйти</string>
+    <string name="account">Аккаунт</string>
+    <string name="title_activity_login">Вход</string>
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Пароль</string>
+    <string name="action_sign_in">Войти или зарегистрироваться</string>
+    <string name="action_sign_in_short">Войти</string>
+    <string name="welcome">"Добро пожаловать!"</string>
+    <string name="invalid_username">Неверное имя пользователя</string>
+    <string name="invalid_password">Пароль должен быть длиннее 5 символов</string>
+    <string name="login_failed">"Ошибка входа"</string>
+    <string name="authorization">Авторизация</string>
+    <string name="name">Имя</string>
+    <string name="email">Email</string>
+    <string name="password">Пароль</string>
+    <string name="enter">Ввод</string>
+    <string name="submit">Отправить</string>
+    <string name="insert_pin">Введите PIN-код</string>
+    <string name="No_access">Доступ ограничен</string>
+    <string name="return_toMainActivity">Вернуться</string>
+    <string name="settings">Настройки</string>
+    <string name="end_timer">Завершить таймер</string>
+    <string name="android_app">Android приложение</string>
+    <string name="Add">Добавить</string>
+    <string name="Remove">Удалить</string>
+    <string name="AllowedApps">Разрешённые приложения:</string>
+    <string name="animal">Животное</string>
+    <string name="your_farm">Ваша ферма</string>
+    <string name="elephant">Слон</string>
+    <string name="cow">Корова</string>
+    <string name="chicken">Курица</string>
+    <string name="mouse">Мышь</string>
+    <string name="control_your_time_accurately">Точно контролируйте своё время</string>
+    <string name="language_en">Язык: RU</string>
+    <string name="choose_language">Выберите язык</string>
+
+</resources>

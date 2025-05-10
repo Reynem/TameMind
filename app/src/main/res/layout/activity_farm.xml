@@ -24,9 +24,10 @@
         android:id="@+id/timeHas"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
         android:text="@string/your_farm"
         android:textSize="30sp"
-        app:layout_constraintBottom_toBottomOf="@id/animalImage"
+        app:layout_constraintBottom_toBottomOf="@+id/animalImage"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,8 +35,8 @@
 
     <ImageView
         android:id="@+id/animalImage"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="150dp"
+        android:layout_height="130dp"
         android:contentDescription="@string/animal"
         app:layout_constraintBottom_toBottomOf="@+id/navigationMenu"
         app:layout_constraintEnd_toEndOf="parent"

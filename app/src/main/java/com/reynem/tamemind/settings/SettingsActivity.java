@@ -14,7 +14,9 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -84,6 +86,10 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
             else if (id == R.id.nav_farm){
                 Intent intent = new Intent(SettingsActivity.this, FarmActivity.class);
                 startActivity(intent);
+                return true;
+            }
+            else if (id == R.id.nav_language){
+                navigationManager.showLanguageSelectionDialog();
                 return true;
             }
             else return id == R.id.nav_settings;

@@ -2,7 +2,7 @@
     <string name="app_name">TameMind</string>
     <string name="hello_world">Hello world</string>
     <string name="select_time">Select Time</string>
-    <string name="startTime">0:00</string>
+    <string name="startTime" translatable="false">0:00</string>
     <string name="feed">Feed</string>
 
     <string name="mainMenu">Home</string>
@@ -10,7 +10,6 @@
     <string name="open">Open</string>
     <string name="close">Close</string>
     <string name="start_farmnig_today">Start farming today!</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="logout">Logout</string>
     <string name="account">Account</string>
@@ -30,19 +29,22 @@
     <string name="enter">Enter</string>
     <string name="submit">Submit</string>
     <string name="insert_pin">Insert PIN</string>
-    <string name="No_access">Доступ ограничен</string>
+    <string name="No_access">Limited Access</string>
     <string name="return_toMainActivity">Return</string>
     <string name="settings">Settings</string>
     <string name="end_timer">End timer</string>
     <string name="android_app">android app</string>
-    <string name="Add">Добавить</string>
-    <string name="Remove">Удалить</string>
-    <string name="AllowedApps">Разрешённые приложения:</string>
+    <string name="Add">Add</string>
+    <string name="Remove">Remove</string>
+    <string name="AllowedApps">Allowed applications:</string>
     <string name="animal">Animal</string>
     <string name="your_farm">Your farm</string>
     <string name="elephant">Elephant</string>
     <string name="cow">Cow</string>
     <string name="chicken">Chicken</string>
     <string name="mouse">Mouse</string>
+    <string name="control_your_time_accurately">Control your time accurately</string>
+    <string name="language_en">Language: EN</string>
+    <string name="choose_language">Choose language</string>
 
 </resources>

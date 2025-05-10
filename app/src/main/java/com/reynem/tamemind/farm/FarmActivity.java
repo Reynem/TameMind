@@ -8,8 +8,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
+import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -51,6 +54,10 @@ public class FarmActivity extends AppCompatActivity implements NavigationListene
                 startActivity(intent);
                 return true;
             }
+            else if (id == R.id.nav_language){
+                navigationManager.showLanguageSelectionDialog();
+                return true;
+            }
             else return id == R.id.nav_farm;
         });
         ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
@@ -86,6 +93,8 @@ public class FarmActivity extends AppCompatActivity implements NavigationListene
         progressAnimal.setProgress((int)progress);
 
     }
+
+
 
     @Override
     public void showNavigationView() {
