@@ -46,4 +46,19 @@
     <string name="language_en">Язык: RU</string>
     <string name="choose_language">Выберите язык</string>
 
+
+    <string name="stop_phubbing_">Прекратите фаббинг</string>
+    <string name="return_to_your_work_">Вернитесь к работе</string>
+    <string name="do_not_use_your_phone_">Не используйте телефон!</string>
+    <string name="put_your_phone_down_">Положите телефон!</string>
+    <string name="focus_on_your_tasks_">Сконцентрируйтесь на задачах!</string>
+    <string name="stay_productive_">Оставайтесь продуктивным!</string>
+    <string name="break_the_phone_habit_">Избавьтесь от привычки пользоваться телефоном!</string>
+    <string name="time_to_work_not_scroll_">Время работать, а не листать ленту!</string>
+    <string name="don_t_let_your_phone_distract_you_">Не позволяйте телефону отвлекать вас!</string>
+    <string name="stay_focused_stay_sharp_">Оставайтесь сосредоточенным, будьте бдительны!</string>
+    <string name="your_work_needs_you_more_">Ваша работа нуждается в вас больше!</string>
+    <string name="eyes_on_your_goals_not_your_screen_">Глаза на цели, а не на экран!</string>
+    <string name="be_present_not_distracted_">Будьте здесь, а не отвлекайтесь!</string>
+
 </resources>

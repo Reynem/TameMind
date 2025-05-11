@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -14,11 +15,9 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
-import androidx.core.os.LocaleListCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
@@ -158,19 +157,21 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         TextView motivationMessage = findViewById(R.id.motivation);
         if (motivationMessage != null) {
             ArrayList<String> sampleMessages = new ArrayList<>();
-            sampleMessages.add("Stop phubbing");
-            sampleMessages.add("Return to your work");
-            sampleMessages.add("Do not use your phone!");
-            sampleMessages.add("Put your phone down!");
-            sampleMessages.add("Focus on your tasks!");
-            sampleMessages.add("Stay productive!");
-            sampleMessages.add("Break the phone habit!");
-            sampleMessages.add("Time to work, not scroll!");
-            sampleMessages.add("Don't let your phone distract you!");
-            sampleMessages.add("Stay focused, stay sharp!");
-            sampleMessages.add("Your work needs you more!");
-            sampleMessages.add("Eyes on your goals, not your screen!");
-            sampleMessages.add("Be present, not distracted!");
+            Resources res = getResources();
+
+            sampleMessages.add(res.getString(R.string.stop_phubbing_));
+            sampleMessages.add(res.getString(R.string.return_to_your_work_));
+            sampleMessages.add(res.getString(R.string.do_not_use_your_phone_));
+            sampleMessages.add(res.getString(R.string.put_your_phone_down_));
+            sampleMessages.add(res.getString(R.string.focus_on_your_tasks_));
+            sampleMessages.add(res.getString(R.string.stay_productive_));
+            sampleMessages.add(res.getString(R.string.break_the_phone_habit_));
+            sampleMessages.add(res.getString(R.string.time_to_work_not_scroll_));
+            sampleMessages.add(res.getString(R.string.don_t_let_your_phone_distract_you_));
+            sampleMessages.add(res.getString(R.string.stay_focused_stay_sharp_));
+            sampleMessages.add(res.getString(R.string.your_work_needs_you_more_));
+            sampleMessages.add(res.getString(R.string.eyes_on_your_goals_not_your_screen_));
+            sampleMessages.add(res.getString(R.string.be_present_not_distracted_));
 
             motivationMessage.setText(sampleMessages.get((int) (Math.random() * 12)));
         }

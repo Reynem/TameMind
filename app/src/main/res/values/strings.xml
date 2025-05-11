@@ -47,4 +47,20 @@
     <string name="language_en">Language: EN</string>
     <string name="choose_language">Choose language</string>
 
+
+    <string name="stop_phubbing_">Stop phubbing</string>
+    <string name="return_to_your_work_">Return to your work</string>
+    <string name="do_not_use_your_phone_">Do not use your phone!</string>
+    <string name="put_your_phone_down_">Put your phone down!</string>
+    <string name="focus_on_your_tasks_">Focus on your tasks!</string>
+    <string name="stay_productive_">Stay productive!</string>
+    <string name="break_the_phone_habit_">Break the phone habit!</string>
+    <string name="time_to_work_not_scroll_">Time to work, not scroll!</string>
+    <string name="don_t_let_your_phone_distract_you_">Do not let your phone distract you!</string>
+    <string name="stay_focused_stay_sharp_">Stay focused, stay sharp!</string>
+    <string name="your_work_needs_you_more_">Your work needs you more!</string>
+    <string name="eyes_on_your_goals_not_your_screen_">Eyes on your goals, not your screen!</string>
+    <string name="be_present_not_distracted_">Be present, not distracted!</string>
+
+
 </resources>
