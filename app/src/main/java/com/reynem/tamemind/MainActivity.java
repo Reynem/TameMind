@@ -292,4 +292,12 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     public void hideNavigationView() {
         navigationManager.hideNavigationView();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (handler != null && timerRunnable != null) {
+            handler.removeCallbacks(timerRunnable);
+        }
+    }
 }
