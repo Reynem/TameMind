@@ -35,7 +35,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 import android.provider.Settings;
+
+import java.util.List;
 import java.util.Locale;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements NavigationListener {
     private final Handler handler = new Handler();
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     private NavigationManager navigationManager;
     private Runnable timerRunnable;
     private boolean isTimerActive = false;
+
+    private List<String> motivationMessagesList;
+    private final Random randomGenerator = new Random();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,6 +113,10 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             showNavigationView();
         });
 
+        // Инициализация списка сообщений
+        initializeMotivationMessages();
+        updateMotivationMessage();
+
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
         endTimer = findViewById(R.id.endTimer);
@@ -154,31 +164,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     protected void onRestart() {
         super.onRestart();
 
-        TextView motivationMessage = findViewById(R.id.motivation);
-        if (motivationMessage != null) {
-            ArrayList<String> sampleMessages = new ArrayList<>();
-            Resources res = getResources();
-
-            sampleMessages.add(res.getString(R.string.stop_phubbing_));
-            sampleMessages.add(res.getString(R.string.return_to_your_work_));
-            sampleMessages.add(res.getString(R.string.do_not_use_your_phone_));
-            sampleMessages.add(res.getString(R.string.put_your_phone_down_));
-            sampleMessages.add(res.getString(R.string.focus_on_your_tasks_));
-            sampleMessages.add(res.getString(R.string.stay_productive_));
-            sampleMessages.add(res.getString(R.string.break_the_phone_habit_));
-            sampleMessages.add(res.getString(R.string.time_to_work_not_scroll_));
-            sampleMessages.add(res.getString(R.string.don_t_let_your_phone_distract_you_));
-            sampleMessages.add(res.getString(R.string.stay_focused_stay_sharp_));
-            sampleMessages.add(res.getString(R.string.your_work_needs_you_more_));
-            sampleMessages.add(res.getString(R.string.eyes_on_your_goals_not_your_screen_));
-            sampleMessages.add(res.getString(R.string.be_present_not_distracted_));
-
-            motivationMessage.setText(sampleMessages.get((int) (Math.random() * 12)));
-        }
-         else {
-            android.util.Log.e("MainActivity", "TextView motivation not found in layout.");
-        }
-
+        updateMotivationMessage();
     }
 
     private void startCountdown(CircularSeekBar circularSeekBar) {
@@ -262,6 +248,38 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         }
 
         return false;
+    }
+
+
+    private void initializeMotivationMessages() {
+        motivationMessagesList = new ArrayList<>();
+        Resources res = getResources();
+        motivationMessagesList.add(res.getString(R.string.stop_phubbing_));
+        motivationMessagesList.add(res.getString(R.string.return_to_your_work_));
+        motivationMessagesList.add(res.getString(R.string.do_not_use_your_phone_));
+        motivationMessagesList.add(res.getString(R.string.put_your_phone_down_));
+        motivationMessagesList.add(res.getString(R.string.focus_on_your_tasks_));
+        motivationMessagesList.add(res.getString(R.string.stay_productive_));
+        motivationMessagesList.add(res.getString(R.string.break_the_phone_habit_));
+        motivationMessagesList.add(res.getString(R.string.time_to_work_not_scroll_));
+        motivationMessagesList.add(res.getString(R.string.don_t_let_your_phone_distract_you_));
+        motivationMessagesList.add(res.getString(R.string.stay_focused_stay_sharp_));
+        motivationMessagesList.add(res.getString(R.string.your_work_needs_you_more_));
+        motivationMessagesList.add(res.getString(R.string.eyes_on_your_goals_not_your_screen_));
+        motivationMessagesList.add(res.getString(R.string.be_present_not_distracted_));
+    }
+
+    private void updateMotivationMessage() {
+        TextView motivationMessageTextView = findViewById(R.id.motivation);
+        if (motivationMessageTextView != null) {
+            if (motivationMessagesList != null && !motivationMessagesList.isEmpty()) {
+                motivationMessageTextView.setText(motivationMessagesList.get(randomGenerator.nextInt(motivationMessagesList.size())));
+            } else {
+                android.util.Log.w("MainActivity", "Motivation messages list is null or empty.");
+            }
+        } else {
+            android.util.Log.e("MainActivity", "TextView motivation not found in layout.");
+        }
     }
 
 
