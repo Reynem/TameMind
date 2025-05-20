@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
@@ -44,6 +45,7 @@ import java.util.Random;
 public class MainActivity extends AppCompatActivity implements NavigationListener {
     private final Handler handler = new Handler();
     private float progress;
+    private long lastClickTime = 0;
     private TextView shownTime;
     private Button startTimer, endTimer;
     private NavigationManager navigationManager;
@@ -114,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             showNavigationView();
         });
 
-        // Инициализация списка сообщений
+        // Initialization of list of messages
         initializeMotivationMessages();
         updateMotivationMessage();
 
@@ -148,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         });
 
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 минут по умолчанию
+        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 by default
         circularSeekBar.setProgress(lastTimerValue);
         shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
@@ -158,6 +160,12 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         });
 
         startTimer.setOnClickListener(v -> {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime - lastClickTime < 500) return;
+            lastClickTime = currentTime;
+
+            if (isTimerActive) return;
+
             progress = circularSeekBar.getProgress() * 60;
             shownTime = findViewById(R.id.timeLeft);
             startTimer.setVisibility(View.INVISIBLE);
@@ -213,7 +221,12 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         clearBlockTime();
         circularSeekBar.setDisablePointer(false);
         startTimer.setVisibility(View.VISIBLE);
+        endTimer.setVisibility(View.INVISIBLE);
         sendSuccessNotification();
+
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 by default
+        circularSeekBar.setProgress(lastTimerValue);
     }
 
     private void setBlockTime(int minutes) {
@@ -233,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
     private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
-        notificationFarm.showNotification(this, "Завершение!", "У вас завершился процесс кормления животного");
+        notificationFarm.showNotification(this, getString(R.string.success), getString(R.string.the_end_of_feeding_process));
     }
 
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityServiceClass) {
@@ -284,13 +297,12 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
             if (motivationMessagesList != null && !motivationMessagesList.isEmpty()) {
                 motivationMessageTextView.setText(motivationMessagesList.get(randomGenerator.nextInt(motivationMessagesList.size())));
             } else {
-                android.util.Log.w("MainActivity", "Motivation messages list is null or empty.");
+                Log.w("MainActivity", "Motivation messages list is null or empty.");
             }
         } else {
-            android.util.Log.e("MainActivity", "TextView motivation not found in layout.");
+            Log.e("MainActivity", "TextView motivation not found in layout.");
         }
     }
-
 
     @Override
     public void showNavigationView() {

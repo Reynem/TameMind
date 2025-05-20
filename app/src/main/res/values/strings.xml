@@ -62,6 +62,8 @@
     <string name="eyes_on_your_goals_not_your_screen_">Eyes on your goals, not your screen!</string>
     <string name="be_present_not_distracted_">Be present, not distracted!</string>
     <string name="focus_session_over">Focus session over</string>
+    <string name="success">Success!</string>
+    <string name="the_end_of_feeding_process">The end of feeding process</string>
 
 
 </resources>

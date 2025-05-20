@@ -61,5 +61,7 @@
     <string name="eyes_on_your_goals_not_your_screen_">Глаза на цели, а не на экран!</string>
     <string name="be_present_not_distracted_">Будьте здесь, а не отвлекайтесь!</string>
     <string name="focus_session_over">Сессия фокуса окончена</string>
+    <string name="success">Завершение!</string>
+    <string name="the_end_of_feeding_process">У вас завершился процесс кормления животного</string>
 
 </resources>
