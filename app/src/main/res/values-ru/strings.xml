@@ -60,5 +60,6 @@
     <string name="your_work_needs_you_more_">Ваша работа нуждается в вас больше!</string>
     <string name="eyes_on_your_goals_not_your_screen_">Глаза на цели, а не на экран!</string>
     <string name="be_present_not_distracted_">Будьте здесь, а не отвлекайтесь!</string>
+    <string name="focus_session_over">Сессия фокуса окончена</string>
 
 </resources>

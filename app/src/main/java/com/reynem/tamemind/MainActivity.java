@@ -13,6 +13,7 @@ import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -130,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
                 if (progress % 5 != 0) progress -= (progress % 5);
                 circularSeekBar.setProgress(progress);
                 shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
+
+                SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+                prefs.edit().putFloat("last_timer_value", progress).apply();
             }
 
             @Override
@@ -142,6 +146,11 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
 
             }
         });
+
+        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 минут по умолчанию
+        circularSeekBar.setProgress(lastTimerValue);
+        shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
         endTimer.setOnClickListener(v -> {
             finishTimer(circularSeekBar);
@@ -291,6 +300,32 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
     @Override
     public void hideNavigationView() {
         navigationManager.hideNavigationView();
+    }
+
+    @Override
+    protected void onSaveInstanceState(@NonNull Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putFloat("current_progress", progress);
+        outState.putBoolean("is_timer_active", isTimerActive);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        progress = savedInstanceState.getFloat("current_progress");
+        isTimerActive = savedInstanceState.getBoolean("is_timer_active");
+
+        if (isTimerActive) {
+            CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
+            int minutes = (int) (progress / 60);
+            int seconds = (int) (progress % 60);
+            circularSeekBar.setProgress(minutes);
+            startTimer.setVisibility(View.INVISIBLE);
+            endTimer.setVisibility(View.VISIBLE);
+            circularSeekBar.setDisablePointer(true);
+            shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
+            startCountdown(circularSeekBar);
+        }
     }
 
     @Override
