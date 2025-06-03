@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="175dp"
-    android:padding="16dp"
+    android:layout_height="190dp"
     android:background="@color/brightYellow"
+    android:orientation="vertical"
+    android:padding="16dp"
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+    <Space
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="42sp" />
 
     <ImageView
         android:id="@+id/cont"
@@ -19,19 +23,20 @@
         app:srcCompat="@drawable/sharp_arrow_back_ios_new_24"
         tools:textAlignment="textStart" />
 
-    <TextView android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/app_name"
-        android:textColor="@color/white"
-        android:textStyle="bold"/>
+        android:textColor="@color/black"
+        android:textStyle="bold" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/control_your_time_accurately"
-        android:textColor="@color/white"
-        android:textSize="14sp"
         android:layout_marginTop="10dp"
-        android:layout_marginBottom="16dp"/>
+        android:layout_marginBottom="16dp"
+        android:text="@string/control_your_time_accurately"
+        android:textColor="@color/black"
+        android:textSize="14sp" />
 
 </LinearLayout>
