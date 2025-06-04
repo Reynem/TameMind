@@ -10,7 +10,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
@@ -32,30 +31,25 @@ import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
+import com.reynem.tamemind.settings.SettingsActivity;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.ImageView;
 import android.widget.TextView;
-import java.util.ArrayList;
 import android.provider.Settings;
-
-import java.util.List;
 import java.util.Locale;
-import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private float progress;
     private long lastClickTime = 0;
-    private TextView shownTime;
+    private TextView shownTime, motivationTextView;
     private Button startTimer, endTimer;
     private NavigationManager navigationManager;
     private DrawerLayout drawerLayout;
     private Runnable timerRunnable;
     private boolean isTimerActive = false;
-
-    private List<String> motivationMessagesList;
-    private final Random randomGenerator = new Random();
+    private final MotivationMessages motivationMessages = new MotivationMessages();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
             drawerLayout.closeDrawer(GravityCompat.START);
 
             if (id == R.id.nav_settings) {
-                startActivity(new Intent(this, Settings.class));
+                startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             } else if (id == R.id.nav_farm) {
                 startActivity(new Intent(this, FarmActivity.class));
@@ -110,9 +104,12 @@ public class MainActivity extends AppCompatActivity {
             } else return id == R.id.nav_home;
         });
 
+        motivationTextView = findViewById(R.id.motivation);
+        Resources appResources = getResources();
+
         // Initialization of list of messages
-        initializeMotivationMessages();
-        updateMotivationMessage();
+        motivationMessages.initializeMotivationMessages(appResources);
+        motivationMessages.updateMotivationMessage(motivationTextView);
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
@@ -174,8 +171,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestart() {
         super.onRestart();
-
-        updateMotivationMessage();
+        motivationMessages.updateMotivationMessage(motivationTextView);
     }
 
     private void startCountdown(CircularSeekBar circularSeekBar) {
@@ -264,38 +260,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
-    }
-
-
-    private void initializeMotivationMessages() {
-        motivationMessagesList = new ArrayList<>();
-        Resources res = getResources();
-        motivationMessagesList.add(res.getString(R.string.stop_phubbing_));
-        motivationMessagesList.add(res.getString(R.string.return_to_your_work_));
-        motivationMessagesList.add(res.getString(R.string.do_not_use_your_phone_));
-        motivationMessagesList.add(res.getString(R.string.put_your_phone_down_));
-        motivationMessagesList.add(res.getString(R.string.focus_on_your_tasks_));
-        motivationMessagesList.add(res.getString(R.string.stay_productive_));
-        motivationMessagesList.add(res.getString(R.string.break_the_phone_habit_));
-        motivationMessagesList.add(res.getString(R.string.time_to_work_not_scroll_));
-        motivationMessagesList.add(res.getString(R.string.don_t_let_your_phone_distract_you_));
-        motivationMessagesList.add(res.getString(R.string.stay_focused_stay_sharp_));
-        motivationMessagesList.add(res.getString(R.string.your_work_needs_you_more_));
-        motivationMessagesList.add(res.getString(R.string.eyes_on_your_goals_not_your_screen_));
-        motivationMessagesList.add(res.getString(R.string.be_present_not_distracted_));
-    }
-
-    private void updateMotivationMessage() {
-        TextView motivationMessageTextView = findViewById(R.id.motivation);
-        if (motivationMessageTextView != null) {
-            if (motivationMessagesList != null && !motivationMessagesList.isEmpty()) {
-                motivationMessageTextView.setText(motivationMessagesList.get(randomGenerator.nextInt(motivationMessagesList.size())));
-            } else {
-                Log.w("MainActivity", "Motivation messages list is null or empty.");
-            }
-        } else {
-            Log.e("MainActivity", "TextView motivation not found in layout.");
-        }
     }
 
     @Override
