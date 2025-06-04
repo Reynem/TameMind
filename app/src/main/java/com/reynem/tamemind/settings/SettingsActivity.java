@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
@@ -14,18 +15,17 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.core.graphics.Insets;
-import androidx.core.os.LocaleListCompat;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
-import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
 
 import java.util.ArrayList;
@@ -33,31 +33,22 @@ import java.util.HashMap;
 import java.util.Set;
 import java.util.Map;
 
-public class SettingsActivity extends AppCompatActivity implements NavigationListener {
+public class SettingsActivity extends AppCompatActivity {
     private EditText editAppName;
     private TextView textAllowedApps;
     private SharedPreferences prefs;
     private NavigationManager navigationManager;
-    private final Map<String, String> appNameToPackageMap = new HashMap<>() {{
-        put("youtube", "com.google.android.youtube");
-        put("telegram", "org.telegram.messenger");
-        put("whatsapp", "com.whatsapp");
-        put("instagram", "com.instagram.android");
-        put("chrome", "com.android.chrome");
-        put("google", "com.google.android.googlequicksearchbox");
-        put("facebook", "com.facebook.katana");
-        put("vk", "com.vkontakte.android");
-    }};
+    private DrawerLayout drawerLayout;
 
-    private final Map<String, String> appPackageToNameMap = new HashMap<>() {{
-        put("com.google.android.youtube", "Youtube");
-        put("org.telegram.messenger", "Telegram");
-        put("com.whatsapp", "WhatsApp");
-        put("com.instagram.android", "Instagram");
-        put("com.android.chrome", "Chrome");
-        put("com.google.android.googlequicksearchbox", "Google");
-        put("com.facebook.katana", "Facebook");
-        put("com.vkontakte.android", "VK");
+    private final Map<String, AppInfo> appMap = new HashMap<>() {{
+        put("youtube", new AppInfo("Youtube", "com.google.android.youtube"));
+        put("telegram", new AppInfo("Telegram", "org.telegram.messenger"));
+        put("whatsapp", new AppInfo("WhatsApp", "com.whatsapp"));
+        put("instagram", new AppInfo("Instagram", "com.instagram.android"));
+        put("chrome", new AppInfo("Chrome", "com.android.chrome"));
+        put("google", new AppInfo("Google", "com.google.android.googlequicksearchbox"));
+        put("facebook", new AppInfo("Facebook", "com.facebook.katana"));
+        put("vk", new AppInfo("VK", "com.vkontakte.android"));
     }};
 
     @SuppressLint("CutPasteId")
@@ -73,34 +64,31 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
         });
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
-        navigationManager = new NavigationManager(navigationView);
-        navigationManager.hideNavigationView();
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
 
-            if (id == R.id.nav_home){
-                Intent intent = new Intent(SettingsActivity.this, MainActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            else if (id == R.id.nav_farm){
-                Intent intent = new Intent(SettingsActivity.this, FarmActivity.class);
-                startActivity(intent);
-                return true;
-            }
-            else if (id == R.id.nav_language){
-                navigationManager.showLanguageSelectionDialog();
-                return true;
-            }
-            else return id == R.id.nav_settings;
-        });
-        ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
-        closeButton.setOnClickListener(v -> hideNavigationView());
+        navigationManager = new NavigationManager(navigationView);
+        drawerLayout = findViewById(R.id.drawerLayout);
 
         ImageView openButton = findViewById(R.id.openNav);
-        openButton.setOnClickListener(v -> {
-            navigationView.setVisibility(NavigationView.VISIBLE);
-            showNavigationView();
+        openButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        View headerView = navigationView.getHeaderView(0);
+        ImageView closeButton = headerView.findViewById(R.id.cont);
+        closeButton.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.START));
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+            if (id == R.id.nav_home) {
+                startActivity(new Intent(this, MainActivity.class));
+                return true;
+            } else if (id == R.id.nav_farm) {
+                startActivity(new Intent(this, FarmActivity.class));
+                return true;
+            } else if (id == R.id.nav_language) {
+                navigationManager.showLanguageSelectionDialog();
+                return true;
+            } else return id == R.id.nav_settings;
         });
 
         editAppName = findViewById(R.id.edit_package_name);
@@ -113,17 +101,17 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
-                new ArrayList<>(appNameToPackageMap.keySet())
+                new ArrayList<>(appMap.keySet())
         );
         autoCompleteTextView.setAdapter(adapter);
 
         btnAdd.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
-            String pkg = appNameToPackageMap.get(input);
-            if (pkg != null) {
-                AppBlockerService.addAllowedApp(prefs, pkg);
+            AppInfo app = appMap.get(input);
+            if (app != null) {
+                AppBlockerService.addAllowedApp(prefs, app.packageName);
                 updateAllowedAppsText();
-                Toast.makeText(this, input + " разрешено", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, app.name + " разрешено", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
@@ -131,39 +119,30 @@ public class SettingsActivity extends AppCompatActivity implements NavigationLis
 
         btnRemove.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
-            String pkg = appNameToPackageMap.get(input);
-            if (pkg != null) {
-                AppBlockerService.removeAllowedApp(prefs, pkg);
+            AppInfo app = appMap.get(input);
+            if (app != null) {
+                AppBlockerService.removeAllowedApp(prefs, app.packageName);
                 updateAllowedAppsText();
-                Toast.makeText(this, input + " запрещено", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, app.name + " запрещено", Toast.LENGTH_SHORT).show();
             } else {
                 Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
         });
 
         updateAllowedAppsText();
-
     }
 
     private void updateAllowedAppsText() {
         Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
         StringBuilder builder = new StringBuilder("Allowed apps:\n");
-        for (String app : allowedApps) {
-            if (appPackageToNameMap.get(app) == null) continue;
-            builder.append("• ").append(appPackageToNameMap.get(app)).append("\n");
+        for (String pkg : allowedApps) {
+            for (AppInfo app : appMap.values()) {
+                if (app.packageName.equals(pkg)) {
+                    builder.append("• ").append(app.name).append("\n");
+                    break;
+                }
+            }
         }
         textAllowedApps.setText(builder.toString());
-    }
-
-
-
-    @Override
-    public void showNavigationView() {
-        navigationManager.showNavigationView();
-    }
-
-    @Override
-    public void hideNavigationView() {
-        navigationManager.hideNavigationView();
     }
 }
