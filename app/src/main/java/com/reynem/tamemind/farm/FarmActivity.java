@@ -17,7 +17,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
-import com.reynem.tamemind.MainActivity;
+import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;

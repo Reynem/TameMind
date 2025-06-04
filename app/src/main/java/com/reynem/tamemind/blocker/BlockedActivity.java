@@ -8,7 +8,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.reynem.tamemind.MainActivity;
+import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 
 public class BlockedActivity extends AppCompatActivity {

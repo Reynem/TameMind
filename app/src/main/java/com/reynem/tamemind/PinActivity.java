@@ -2,21 +2,18 @@ package com.reynem.tamemind;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.reynem.tamemind.MainActivity;
-import com.reynem.tamemind.R;
+import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.utils.PinManager;
 
 public class PinActivity extends AppCompatActivity {
     private PinManager pinManager;
     private EditText pinInput;
-    private Button confirmButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +22,7 @@ public class PinActivity extends AppCompatActivity {
 
         pinManager = new PinManager(this);
         pinInput = findViewById(R.id.pinInput);
-        confirmButton = findViewById(R.id.confirmButton);
+        Button confirmButton = findViewById(R.id.confirmButton);
 
         confirmButton.setOnClickListener(v -> {
             String enteredPin = pinInput.getText().toString();

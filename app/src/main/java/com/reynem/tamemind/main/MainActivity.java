@@ -1,4 +1,4 @@
-package com.reynem.tamemind;
+package com.reynem.tamemind.main;
 
 import android.content.ComponentName;
 import android.content.Context;
@@ -20,17 +20,18 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.core.graphics.Insets;
+import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 
 import com.google.android.material.navigation.NavigationView;
+import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
-import com.reynem.tamemind.navigation.NavigationListener;
 import com.reynem.tamemind.navigation.NavigationManager;
-import com.reynem.tamemind.settings.SettingsActivity;
 import com.reynem.tamemind.utils.NotificationFarm;
 import android.Manifest;
 import android.widget.ImageView;
@@ -42,13 +43,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Random;
 
-public class MainActivity extends AppCompatActivity implements NavigationListener {
+public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private float progress;
     private long lastClickTime = 0;
     private TextView shownTime;
     private Button startTimer, endTimer;
     private NavigationManager navigationManager;
+    private DrawerLayout drawerLayout;
     private Runnable timerRunnable;
     private boolean isTimerActive = false;
 
@@ -81,39 +83,31 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         }
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
+
         navigationManager = new NavigationManager(navigationView);
-        navigationManager.hideNavigationView();
-        navigationView.setNavigationItemSelectedListener(item -> {
-            int id = item.getItemId();
-
-            if (id == R.id.nav_home){
-
-                return true;
-            }
-            else if (id == R.id.nav_settings){
-                Intent intent1 = new Intent(MainActivity.this, SettingsActivity.class);
-                startActivity(intent1);
-                return true;
-            }
-            else if (id == R.id.nav_farm){
-                Intent intent2 = new Intent(MainActivity.this, FarmActivity.class);
-                startActivity(intent2);
-                return true;
-            }
-            else if (id == R.id.nav_language){
-                navigationManager.showLanguageSelectionDialog();
-                return true;
-            }
-            return false;
-        });
-
-        ImageView closeButton = navigationView.getHeaderView(0).findViewById(R.id.cont);
-        closeButton.setOnClickListener(v -> hideNavigationView());
+        drawerLayout = findViewById(R.id.drawerLayout);
 
         ImageView openButton = findViewById(R.id.openNav);
-        openButton.setOnClickListener(v -> {
-            navigationView.setVisibility(NavigationView.VISIBLE);
-            showNavigationView();
+        openButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+
+        View headerView = navigationView.getHeaderView(0);
+        ImageView closeButton = headerView.findViewById(R.id.cont);
+        closeButton.setOnClickListener(v -> drawerLayout.closeDrawer(GravityCompat.START));
+
+        navigationView.setNavigationItemSelectedListener(item -> {
+            int id = item.getItemId();
+            drawerLayout.closeDrawer(GravityCompat.START);
+
+            if (id == R.id.nav_settings) {
+                startActivity(new Intent(this, Settings.class));
+                return true;
+            } else if (id == R.id.nav_farm) {
+                startActivity(new Intent(this, FarmActivity.class));
+                return true;
+            } else if (id == R.id.nav_language) {
+                navigationManager.showLanguageSelectionDialog();
+                return true;
+            } else return id == R.id.nav_home;
         });
 
         // Initialization of list of messages
@@ -302,16 +296,6 @@ public class MainActivity extends AppCompatActivity implements NavigationListene
         } else {
             Log.e("MainActivity", "TextView motivation not found in layout.");
         }
-    }
-
-    @Override
-    public void showNavigationView() {
-        navigationManager.showNavigationView();
-    }
-
-    @Override
-    public void hideNavigationView() {
-        navigationManager.hideNavigationView();
     }
 
     @Override

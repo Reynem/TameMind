@@ -11,7 +11,7 @@
 
     <Space
         android:layout_width="match_parent"
-        android:layout_height="42sp" />
+        android:layout_height="48sp" />
 
     <ImageView
         android:id="@+id/cont"
