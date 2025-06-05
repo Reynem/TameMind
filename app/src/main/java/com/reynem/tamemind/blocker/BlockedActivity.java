@@ -33,7 +33,12 @@ public class BlockedActivity extends AppCompatActivity {
         if (timeRemaining > 0) {
             int minutes = (int) (timeRemaining / (60 * 1000));
             int seconds = (int) ((timeRemaining / 1000) % 60);
-            String time = minutes + ":" + seconds;
+            String time;
+            if (seconds < 10){
+                time = minutes + ":0" + seconds;
+            } else {
+                time = minutes + ":" + seconds;
+            }
             timeRemainingText.setText(time);
         } else {
             timeRemainingText.setText(R.string.focus_session_over);

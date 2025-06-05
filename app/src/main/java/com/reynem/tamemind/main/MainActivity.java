@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity {
         shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
         endTimer.setOnClickListener(v -> {
-            finishTimer(circularSeekBar);
+            finishTimer(circularSeekBar, false);
             progress = 0;
         });
 
@@ -198,7 +198,7 @@ public class MainActivity extends AppCompatActivity {
 
                     handler.postDelayed(this, 1000);
                 } else {
-                    finishTimer(circularSeekBar);
+                    finishTimer(circularSeekBar, true);
                 }
             }
         };
@@ -206,13 +206,13 @@ public class MainActivity extends AppCompatActivity {
         handler.postDelayed(timerRunnable, 1000);
     }
 
-    private void finishTimer(CircularSeekBar circularSeekBar) {
+    private void finishTimer(CircularSeekBar circularSeekBar, boolean shouldSendNotification) {
         isTimerActive = false;
         clearBlockTime();
         circularSeekBar.setDisablePointer(false);
         startTimer.setVisibility(View.VISIBLE);
         endTimer.setVisibility(View.INVISIBLE);
-        sendSuccessNotification();
+        if (shouldSendNotification) sendSuccessNotification();
 
         SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
         float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 by default
