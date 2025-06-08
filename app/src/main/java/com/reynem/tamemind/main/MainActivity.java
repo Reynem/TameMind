@@ -23,21 +23,23 @@ import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
+import android.Manifest;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.provider.Settings;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
+import java.util.Locale;
 
 import com.google.android.material.navigation.NavigationView;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
+import com.reynem.tamemind.services.TimerNotificationService;
 import com.reynem.tamemind.settings.SettingsActivity;
 import com.reynem.tamemind.utils.NotificationFarm;
-import android.Manifest;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.provider.Settings;
-import java.util.Locale;
+import com.reynem.tamemind.utils.TimerConstants;
 
 public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
@@ -125,8 +127,8 @@ public class MainActivity extends AppCompatActivity {
                 circularSeekBar.setProgress(progress);
                 shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
 
-                SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-                prefs.edit().putFloat("last_timer_value", progress).apply();
+                SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+                prefs.edit().putFloat(TimerConstants.PREF_LAST_TIMER_VALUE, progress).apply();
             }
 
             @Override
@@ -140,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 by default
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
         circularSeekBar.setProgress(lastTimerValue);
         shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
@@ -163,9 +165,6 @@ public class MainActivity extends AppCompatActivity {
             endTimer.setVisibility(View.VISIBLE);
             startCountdown(circularSeekBar);
         });
-
-
-
     }
 
     @Override
@@ -182,6 +181,8 @@ public class MainActivity extends AppCompatActivity {
 
         int minutes = (int) (progress / 60);
         setBlockTime(minutes);
+        Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
+        startService(timerServiceIntent);
 
         circularSeekBar.setDisablePointer(true);
         startTimer.setVisibility(View.INVISIBLE);
@@ -209,28 +210,30 @@ public class MainActivity extends AppCompatActivity {
     private void finishTimer(CircularSeekBar circularSeekBar, boolean shouldSendNotification) {
         isTimerActive = false;
         clearBlockTime();
+        Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
+        stopService(timerServiceIntent);
         circularSeekBar.setDisablePointer(false);
         startTimer.setVisibility(View.VISIBLE);
         endTimer.setVisibility(View.INVISIBLE);
         if (shouldSendNotification) sendSuccessNotification();
 
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat("last_timer_value", 25); // 25 by default
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
         circularSeekBar.setProgress(lastTimerValue);
     }
 
     private void setBlockTime(int minutes) {
         long blockUntil = System.currentTimeMillis() + ((long) minutes * 60 * 1000);
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        prefs.edit().putLong("block_until", blockUntil).apply();
-        long allTime = prefs.getLong("get_all_time", 0L);
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().putLong(TimerConstants.PREF_BLOCK_UNTIL, blockUntil).apply();
+        long allTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
         allTime += blockUntil;
-        prefs.edit().putLong("get_all_time", allTime).apply();
+        prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, allTime).apply();
     }
 
     private void clearBlockTime() {
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        prefs.edit().remove("block_until").apply();
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
     }
 
 
@@ -265,15 +268,15 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putFloat("current_progress", progress);
-        outState.putBoolean("is_timer_active", isTimerActive);
+        outState.putFloat(TimerConstants.PREF_PROGRESS_SECONDS, progress);
+        outState.putBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE, isTimerActive);
     }
 
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        progress = savedInstanceState.getFloat("current_progress");
-        isTimerActive = savedInstanceState.getBoolean("is_timer_active");
+        progress = savedInstanceState.getFloat(TimerConstants.PREF_PROGRESS_SECONDS);
+        isTimerActive = savedInstanceState.getBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE);
 
         if (isTimerActive) {
             CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
