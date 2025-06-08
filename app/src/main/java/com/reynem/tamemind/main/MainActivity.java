@@ -15,6 +15,7 @@ import android.widget.Button;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -64,14 +65,9 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
-        // I will put it there
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
-                    != PackageManager.PERMISSION_GRANTED) {
-                ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
-            }
-        }
+        checkNotificationPermission();
 
+        // I will put it there
         if (!isAccessibilityServiceEnabled(this, AppBlockerService.class)) {
             Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -182,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
         int minutes = (int) (progress / 60);
         setBlockTime(minutes);
         Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
-        startService(timerServiceIntent);
+        startForegroundService(timerServiceIntent);
 
         circularSeekBar.setDisablePointer(true);
         startTimer.setVisibility(View.INVISIBLE);
@@ -227,10 +223,9 @@ public class MainActivity extends AppCompatActivity {
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         prefs.edit().putLong(TimerConstants.PREF_BLOCK_UNTIL, blockUntil).apply();
         long allTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
-        allTime += blockUntil;
+        allTime += minutes;
         prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, allTime).apply();
     }
-
     private void clearBlockTime() {
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
@@ -263,6 +258,27 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return false;
+    }
+
+    private void checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
+                    != PackageManager.PERMISSION_GRANTED) {
+
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.POST_NOTIFICATIONS)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle("Permission for notifications")
+                            .setMessage("To work the timer, you need permission to show notifications")
+                            .setPositiveButton("Enable", (dialog, which) -> ActivityCompat.requestPermissions(this,
+                                    new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1))
+                            .setNegativeButton("Cancel", null)
+                            .show();
+                } else {
+                    ActivityCompat.requestPermissions(this,
+                            new String[]{Manifest.permission.POST_NOTIFICATIONS}, 1);
+                }
+            }
+        }
     }
 
     @Override
