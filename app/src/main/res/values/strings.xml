@@ -65,5 +65,9 @@
     <string name="success">Success!</string>
     <string name="the_end_of_feeding_process">The end of feeding process</string>
 
+    <string name="focus_notification_title">Focus mode</string>
+    <string name="time_left_notification_text">Remains: %s</string>
+    <string name="stop_timer_action_text">Stop</string>
+
 
 </resources>

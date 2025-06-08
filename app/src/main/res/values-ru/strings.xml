@@ -64,4 +64,8 @@
     <string name="success">Завершение!</string>
     <string name="the_end_of_feeding_process">У вас завершился процесс кормления животного</string>
 
+    <string name="focus_notification_title">Фокус режим</string>
+    <string name="time_left_notification_text">Осталось: %s</string>
+    <string name="stop_timer_action_text">Стоп</string>
+
 </resources>
