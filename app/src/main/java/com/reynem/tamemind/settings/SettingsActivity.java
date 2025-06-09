@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
+import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,7 +36,8 @@ import java.util.Map;
 
 public class SettingsActivity extends AppCompatActivity {
     private EditText editAppName;
-    private TextView textAllowedApps;
+    private LinearLayout appsContainer;
+    private LinearLayout emptyStateLayout;
     private SharedPreferences prefs;
     private NavigationManager navigationManager;
     private DrawerLayout drawerLayout;
@@ -91,12 +93,15 @@ public class SettingsActivity extends AppCompatActivity {
             } else return id == R.id.nav_settings;
         });
 
+        // Инициализация элементов UI
         editAppName = findViewById(R.id.edit_package_name);
         Button btnAdd = findViewById(R.id.btn_add);
         Button btnRemove = findViewById(R.id.btn_remove);
-        textAllowedApps = findViewById(R.id.text_allowed_apps);
+        appsContainer = findViewById(R.id.appsContainer);
+        emptyStateLayout = findViewById(R.id.emptyStateLayout);
         prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
 
+        // Настройка AutoComplete
         @SuppressLint("CutPasteId") AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
@@ -105,44 +110,116 @@ public class SettingsActivity extends AppCompatActivity {
         );
         autoCompleteTextView.setAdapter(adapter);
 
+        // Обработчик добавления приложения
         btnAdd.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
             if (app != null) {
-                AppBlockerService.addAllowedApp(prefs, app.packageName);
-                updateAllowedAppsText();
-                Toast.makeText(this, app.name + " разрешено", Toast.LENGTH_SHORT).show();
+                Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
+                if (!allowedApps.contains(app.packageName)) {
+                    AppBlockerService.addAllowedApp(prefs, app.packageName);
+                    updateAllowedAppsUI();
+                    editAppName.setText(""); // Очистить поле ввода
+                    Toast.makeText(this, app.name + " разрешено", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, app.name + " уже в списке разрешенных", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
         });
 
+        // Обработчик удаления приложения
         btnRemove.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
             if (app != null) {
-                AppBlockerService.removeAllowedApp(prefs, app.packageName);
-                updateAllowedAppsText();
-                Toast.makeText(this, app.name + " запрещено", Toast.LENGTH_SHORT).show();
+                Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
+                if (allowedApps.contains(app.packageName)) {
+                    AppBlockerService.removeAllowedApp(prefs, app.packageName);
+                    updateAllowedAppsUI();
+                    editAppName.setText(""); // Очистить поле ввода
+                    Toast.makeText(this, app.name + " запрещено", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(this, app.name + " не найдено в разрешенных", Toast.LENGTH_SHORT).show();
+                }
             } else {
                 Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
             }
         });
 
-        updateAllowedAppsText();
+        updateAllowedAppsUI();
     }
 
-    private void updateAllowedAppsText() {
+    private void updateAllowedAppsUI() {
         Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
-        StringBuilder builder = new StringBuilder("Allowed apps:\n");
-        for (String pkg : allowedApps) {
-            for (AppInfo app : appMap.values()) {
-                if (app.packageName.equals(pkg)) {
-                    builder.append("• ").append(app.name).append("\n");
-                    break;
+
+        // Очистить контейнер
+        appsContainer.removeAllViews();
+
+        if (allowedApps.isEmpty()) {
+            // Показать пустое состояние
+            emptyStateLayout.setVisibility(View.VISIBLE);
+        } else {
+            // Скрыть пустое состояние
+            emptyStateLayout.setVisibility(View.GONE);
+
+            // Добавить каждое приложение как отдельный элемент
+            for (String pkg : allowedApps) {
+                AppInfo app = findAppByPackage(pkg);
+                if (app != null) {
+                    View appItemView = createAppItemView(app);
+                    appsContainer.addView(appItemView);
                 }
             }
         }
-        textAllowedApps.setText(builder.toString());
+    }
+
+    private AppInfo findAppByPackage(String packageName) {
+        for (AppInfo app : appMap.values()) {
+            if (app.packageName.equals(packageName)) {
+                return app;
+            }
+        }
+        return null;
+    }
+
+    private View createAppItemView(AppInfo app) {
+        // Создаем горизонтальный LinearLayout для элемента приложения
+        LinearLayout itemLayout = new LinearLayout(this);
+        itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+        itemLayout.setPadding(16, 12, 16, 12);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 0, 0, 8);
+        itemLayout.setLayoutParams(layoutParams);
+
+        itemLayout.setBackgroundResource(R.drawable.app_item_background);
+
+        View dot = new View(this);
+        LinearLayout.LayoutParams dotParams = new LinearLayout.LayoutParams(12, 12);
+        dotParams.setMargins(0, 8, 16, 0);
+        dot.setLayoutParams(dotParams);
+        dot.setBackgroundResource(R.drawable.circle_dot);
+
+        TextView appName = new TextView(this);
+        appName.setText(app.name);
+        appName.setTextSize(16);
+        appName.setTextColor(getResources().getColor(android.R.color.black, getTheme()));
+
+        LinearLayout.LayoutParams textParams = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1.0f
+        );
+        appName.setLayoutParams(textParams);
+
+        itemLayout.addView(dot);
+        itemLayout.addView(appName);
+
+        return itemLayout;
     }
 }
