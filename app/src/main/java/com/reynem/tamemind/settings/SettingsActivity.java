@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
@@ -92,8 +93,6 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             } else return id == R.id.nav_settings;
         });
-
-        // Инициализация элементов UI
         editAppName = findViewById(R.id.edit_package_name);
         Button btnAdd = findViewById(R.id.btn_add);
         Button btnRemove = findViewById(R.id.btn_remove);
@@ -101,8 +100,8 @@ public class SettingsActivity extends AppCompatActivity {
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
         prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
 
-        // Настройка AutoComplete
-        @SuppressLint("CutPasteId") AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);
+        @SuppressLint("CutPasteId")
+        AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);
         ArrayAdapter<String> adapter = new ArrayAdapter<>(
                 this,
                 android.R.layout.simple_dropdown_item_1line,
@@ -110,7 +109,6 @@ public class SettingsActivity extends AppCompatActivity {
         );
         autoCompleteTextView.setAdapter(adapter);
 
-        // Обработчик добавления приложения
         btnAdd.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
@@ -119,17 +117,16 @@ public class SettingsActivity extends AppCompatActivity {
                 if (!allowedApps.contains(app.packageName)) {
                     AppBlockerService.addAllowedApp(prefs, app.packageName);
                     updateAllowedAppsUI();
-                    editAppName.setText(""); // Очистить поле ввода
-                    Toast.makeText(this, app.name + " разрешено", Toast.LENGTH_SHORT).show();
+                    editAppName.setText("");
+                    Toast.makeText(this, app.name + " allowed", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, app.name + " уже в списке разрешенных", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, app.name + " is already allowed", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Application is not in app list", Toast.LENGTH_SHORT).show();
             }
         });
 
-        // Обработчик удаления приложения
         btnRemove.setOnClickListener(v -> {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
@@ -138,13 +135,13 @@ public class SettingsActivity extends AppCompatActivity {
                 if (allowedApps.contains(app.packageName)) {
                     AppBlockerService.removeAllowedApp(prefs, app.packageName);
                     updateAllowedAppsUI();
-                    editAppName.setText(""); // Очистить поле ввода
-                    Toast.makeText(this, app.name + " запрещено", Toast.LENGTH_SHORT).show();
+                    editAppName.setText("");
+                    Toast.makeText(this, app.name + " prohibited", Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(this, app.name + " не найдено в разрешенных", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, app.name + " not found in allowed apps list", Toast.LENGTH_SHORT).show();
                 }
             } else {
-                Toast.makeText(this, "Приложение не найдено в списке", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Application is not in app list", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -153,18 +150,11 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void updateAllowedAppsUI() {
         Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
-
-        // Очистить контейнер
         appsContainer.removeAllViews();
-
         if (allowedApps.isEmpty()) {
-            // Показать пустое состояние
             emptyStateLayout.setVisibility(View.VISIBLE);
         } else {
-            // Скрыть пустое состояние
             emptyStateLayout.setVisibility(View.GONE);
-
-            // Добавить каждое приложение как отдельный элемент
             for (String pkg : allowedApps) {
                 AppInfo app = findAppByPackage(pkg);
                 if (app != null) {
@@ -185,19 +175,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private View createAppItemView(AppInfo app) {
-        // Создаем горизонтальный LinearLayout для элемента приложения
-        LinearLayout itemLayout = new LinearLayout(this);
-        itemLayout.setOrientation(LinearLayout.HORIZONTAL);
-        itemLayout.setPadding(16, 12, 16, 12);
-
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
-        );
-        layoutParams.setMargins(0, 0, 0, 8);
-        itemLayout.setLayoutParams(layoutParams);
-
-        itemLayout.setBackgroundResource(R.drawable.app_item_background);
+        LinearLayout itemLayout = getLinearLayout();
 
         View dot = new View(this);
         LinearLayout.LayoutParams dotParams = new LinearLayout.LayoutParams(12, 12);
@@ -220,6 +198,23 @@ public class SettingsActivity extends AppCompatActivity {
         itemLayout.addView(dot);
         itemLayout.addView(appName);
 
+        return itemLayout;
+    }
+
+    @NonNull
+    private LinearLayout getLinearLayout() {
+        LinearLayout itemLayout = new LinearLayout(this);
+        itemLayout.setOrientation(LinearLayout.HORIZONTAL);
+        itemLayout.setPadding(16, 12, 16, 12);
+
+        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT
+        );
+        layoutParams.setMargins(0, 0, 0, 8);
+        itemLayout.setLayoutParams(layoutParams);
+
+        itemLayout.setBackgroundResource(R.drawable.app_item_background);
         return itemLayout;
     }
 }
