@@ -2,93 +2,180 @@
 <androidx.drawerlayout.widget.DrawerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/drawerLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <androidx.constraintlayout.widget.ConstraintLayout
-        xmlns:tools="http://schemas.android.com/tools"
-        android:id="@+id/main"
+
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:context=".main.MainActivity"
-        android:background="?attr/colorSurface" android:padding="16dp">
+        android:fillViewport="true">
 
-        <ImageView
-            android:id="@+id/openNav"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_gravity="start"
-            android:layout_marginStart="15dp"
-            android:layout_marginTop="15dp"
-            android:contentDescription="@string/close"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
-            tools:textAlignment="textStart" />
-
-
-        <me.tankery.lib.circularseekbar.CircularSeekBar
-            android:id="@+id/circularSeekBar"
-            android:layout_width="300dp"
-            android:layout_height="300dp"
-            android:layout_marginTop="32dp" app:cs_circle_color="@color/darkYellow"
-            app:cs_circle_fill="@color/brightYellow"
-            app:cs_circle_progress_color="@color/darkGreen"
-            app:cs_circle_stroke_width="20dp"
-            app:cs_circle_style="round"
-            app:cs_disable_pointer="false"
-            app:cs_disable_progress_glow="true"
-            app:cs_hide_progress_when_empty="true"
-            app:cs_lock_enabled="true"
-            app:cs_max="120"
-            app:cs_pointer_color="@color/darkGreen"
-            app:cs_pointer_stroke_width="31dp"
-            app:cs_progress="25"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/openNav" /> <TextView
-            android:id="@+id/timeLeft"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/main"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp" android:text="@string/startTime"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline2" android:textColor="?attr/colorOnSurface" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/circularSeekBar" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/startTimer"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_marginTop="24dp" android:paddingStart="32dp" android:paddingEnd="32dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:text="@string/select_time"
-            app:cornerRadius="8dp" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/endTimer"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_marginTop="24dp"
-            android:paddingStart="32dp"
-            android:paddingEnd="32dp"
-            android:paddingTop="12dp"
-            android:paddingBottom="12dp"
-            android:text="@string/end_timer"
-            android:visibility="invisible"
-            app:cornerRadius="8dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/timeLeft" />
-        <TextView
-            android:id="@+id/motivation"
-            android:layout_width="0dp" android:layout_height="wrap_content"
-            android:layout_marginStart="32dp" android:layout_marginEnd="32dp"
-            android:layout_marginTop="32dp" android:gravity="center_horizontal" android:text="@string/start_farmnig_today"
-            android:textAppearance="@style/TextAppearance.MaterialComponents.Body1" android:textColor="?attr/colorOnSurfaceVariant" app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/startTimer" />
+            tools:context=".main.MainActivity"
+            android:background="?attr/colorSurface">
 
+            <!-- Верхняя панель с градиентом -->
+            <View
+                android:id="@+id/topBackground"
+                android:layout_width="0dp"
+                android:layout_height="200dp"
+                android:background="@drawable/gradient_background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <!-- Кнопка меню с современным стилем -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/navCard"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="40dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="4dp"
+                app:cardBackgroundColor="@color/white"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+                    android:id="@+id/openNav"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center"
+                    android:contentDescription="@string/close"
+                    app:srcCompat="@drawable/sharp_arrow_forward_ios_24"
+                    app:tint="@color/primary_red" />
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Приветственный текст -->
+            <TextView
+                android:id="@+id/welcomeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="60dp"
+                android:text="@string/app_name"
+                android:textSize="28sp"
+                android:textStyle="bold"
+                android:textColor="@color/white"
+                android:fontFamily="sans-serif-light"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <!-- Карточка с таймером -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/timerCard"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="140dp"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="12dp"
+                app:cardBackgroundColor="?attr/colorSurface"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="32dp">
+
+                    <!-- Круговой прогресс-бар -->
+                    <me.tankery.lib.circularseekbar.CircularSeekBar
+                        android:id="@+id/circularSeekBar"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:layout_constraintDimensionRatio="1:1"
+                        app:cs_circle_color="@color/primary_red_very_light"
+                        app:cs_circle_fill="@color/white"
+                        app:cs_circle_progress_color="@color/primary_red"
+                        app:cs_circle_stroke_width="16dp"
+                        app:cs_circle_style="round"
+                        app:cs_disable_pointer="false"
+                        app:cs_disable_progress_glow="false"
+                        app:cs_hide_progress_when_empty="true"
+                        app:cs_lock_enabled="true"
+                        app:cs_max="120"
+                        app:cs_pointer_color="@color/primary_red_dark"
+                        app:cs_pointer_stroke_width="24dp"
+                        app:cs_progress="25"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <!-- Время в центре -->
+                    <TextView
+                        android:id="@+id/timeLeft"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/startTime"
+                        android:textSize="36sp"
+                        android:textStyle="bold"
+                        android:textColor="?attr/colorOnSurface"
+                        android:fontFamily="sans-serif-light"
+                        app:layout_constraintBottom_toBottomOf="@+id/circularSeekBar"
+                        app:layout_constraintEnd_toEndOf="@+id/circularSeekBar"
+                        app:layout_constraintStart_toStartOf="@+id/circularSeekBar"
+                        app:layout_constraintTop_toTopOf="@+id/circularSeekBar" />
+
+                    <!-- Кнопки -->
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/startTimer"
+                        style="@style/PrimaryButton"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="32dp"
+                        android:text="@string/select_time"
+                        android:textSize="16sp"
+                        app:iconGravity="textStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/circularSeekBar" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/endTimer"
+                        style="@style/SecondaryButton"
+                        android:layout_width="0dp"
+                        android:layout_height="56dp"
+                        android:layout_marginTop="12dp"
+                        android:text="@string/end_timer"
+                        android:textSize="16sp"
+                        android:visibility="invisible"
+                        app:iconGravity="textStart"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/startTimer" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- Мотивационное сообщение -->
+            <TextView
+                android:id="@+id/motivation"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="32dp"
+                android:layout_marginTop="24dp"
+                android:gravity="center_horizontal"
+                android:text="@string/start_farmnig_today"
+                android:textSize="16sp"
+                android:textColor="?attr/colorOnSurfaceVariant"
+                android:fontFamily="sans-serif"
+                android:lineSpacingExtra="4dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/timerCard" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
     <com.google.android.material.navigation.NavigationView
         android:id="@+id/navigationMenu"
         android:layout_width="wrap_content"
@@ -96,4 +183,5 @@
         android:layout_gravity="start"
         app:headerLayout="@layout/nav_header"
         app:menu="@menu/nav_menu" />
+
 </androidx.drawerlayout.widget.DrawerLayout>
