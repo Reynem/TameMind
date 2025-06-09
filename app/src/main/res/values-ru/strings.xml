@@ -68,4 +68,9 @@
     <string name="time_left_notification_text">Осталось: %s</string>
     <string name="stop_timer_action_text">Стоп</string>
 
+    <string name="no_allowed_apps">Нет разрешенных приложений</string>
+    <string name="add_app_upper">Добавьте приложения выше</string>
+    <string name="allowed_apps_desc">Добавьте приложения, которые можно использовать во время фокус-сессии</string>
+    <string name="manage_apps">Управление приложениями</string>
+
 </resources>

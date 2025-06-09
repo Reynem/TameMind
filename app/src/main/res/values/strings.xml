@@ -69,5 +69,10 @@
     <string name="time_left_notification_text">Remains: %s</string>
     <string name="stop_timer_action_text">Stop</string>
 
+    <string name="no_allowed_apps">No allowed apps</string>
+    <string name="add_app_upper">Add app upper</string>
+    <string name="allowed_apps_desc">Add apps that can be used during the focus session</string>
+    <string name="manage_apps">Manage applications</string>
+
 
 </resources>
