@@ -74,5 +74,17 @@
     <string name="allowed_apps_desc">Add apps that can be used during the focus session</string>
     <string name="manage_apps">Manage applications</string>
 
+    <string name="progress_to_next_level">Progress to next level</string>
+    <string name="total_focus_time">Total Focus Time</string>
+    <string name="keep_going_next_animal">Keep going to unlock the next animal!</string>
+    <string name="every_minute_feeds">Every minute of focus feeds your animal!</string>
+    <string name="amazing_progress">Amazing progress! Your animal is thriving!</string>
+    <string name="great_progress_halfway">Great progress! You\'re halfway there!</string>
+    <string name="almost_there_next_level">Almost there! Next level is so close!</string>
+    <string name="your_dedication_growing">Your dedication is growing your farm!</string>
+    <string name="focus_more_evolve">Focus more to evolve your companion!</string>
+    <string name="_0">0%</string>
+    <string name="_0h_0m">0h 0m</string>
+
 
 </resources>

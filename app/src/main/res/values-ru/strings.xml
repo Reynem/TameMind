@@ -73,4 +73,16 @@
     <string name="allowed_apps_desc">Добавьте приложения, которые можно использовать во время фокус-сессии</string>
     <string name="manage_apps">Управление приложениями</string>
 
+    <string name = "progress_to_next_level">Проверка до следующего уровня</string>
+    <string name = "total_focus_time">Общее время фокуса</string>
+    <string name = "keep_going_next_animal">Продолжайте разблокировать следующее животное!</string>
+    <string name = "every_minute_feeds">Каждую минуту фокусировки питает ваше животное!</string>
+    <string name = "amazing_progress">Удивительный прогресс! Ваше животное процветает!</string>
+    <string name = "great_progress_halfway">Отличный прогресс! Вы уже на полпути!</string>
+    <string name = "almost_there_next_level">Почти дошли! Следующий уровень так близко!</string>
+    <string name = "your_dedication_growing">Ваша посвящение выращивает вашу ферму!</string>
+    <string name = "focus_more_evolve">Фокусируется больше, чтобы развивать свой компаньон!</string>
+    <string name="_0">0%</string>
+    <string name="_0h_0m">0ч 0м</string>
+
 </resources>
