@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
     private float progress;
     private long lastClickTime = 0;
+    private long timerStartTime = 0;
     private TextView shownTime, motivationTextView;
     private Button startTimer, endTimer;
     private NavigationManager navigationManager;
@@ -174,6 +175,7 @@ public class MainActivity extends AppCompatActivity {
             handler.removeCallbacks(timerRunnable);
         }
         isTimerActive = true;
+        timerStartTime = System.currentTimeMillis();
 
         int minutes = (int) (progress / 60);
         setBlockTime(minutes);
@@ -204,18 +206,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void finishTimer(CircularSeekBar circularSeekBar, boolean shouldSendNotification) {
+        boolean wasEarlyStopped = false;
+
+        if (isTimerActive && timerStartTime > 0) {
+            long elapsedTime = System.currentTimeMillis() - timerStartTime;
+            if (elapsedTime > 5000 && !shouldSendNotification) {
+                wasEarlyStopped = true;
+                applyEarlyStopPenalty();
+            }
+        }
+
         isTimerActive = false;
+        timerStartTime = 0;
         clearBlockTime();
         Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
         stopService(timerServiceIntent);
         circularSeekBar.setDisablePointer(false);
         startTimer.setVisibility(View.VISIBLE);
         endTimer.setVisibility(View.INVISIBLE);
-        if (shouldSendNotification) sendSuccessNotification();
+
+        if (shouldSendNotification) {
+            sendSuccessNotification();
+        } else if (wasEarlyStopped) {
+            sendPenaltyNotification();
+        }
 
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
         circularSeekBar.setProgress(lastTimerValue);
+    }
+
+    private void applyEarlyStopPenalty() {
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        long allTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
+
+        long newAllTime = allTime / 2;
+        prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, newAllTime).apply();
     }
 
     private void setBlockTime(int minutes) {
@@ -226,15 +252,20 @@ public class MainActivity extends AppCompatActivity {
         allTime += minutes;
         prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, allTime).apply();
     }
+
     private void clearBlockTime() {
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
     }
 
-
     private void sendSuccessNotification(){
         NotificationFarm notificationFarm = new NotificationFarm();
         notificationFarm.showNotification(this, getString(R.string.success), getString(R.string.the_end_of_feeding_process));
+    }
+
+    private void sendPenaltyNotification(){
+        NotificationFarm notificationFarm = new NotificationFarm();
+        notificationFarm.showNotification(this, getString(R.string.penalty), getString(R.string.your_progress_reduced));
     }
 
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityServiceClass) {
@@ -286,6 +317,7 @@ public class MainActivity extends AppCompatActivity {
         super.onSaveInstanceState(outState);
         outState.putFloat(TimerConstants.PREF_PROGRESS_SECONDS, progress);
         outState.putBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE, isTimerActive);
+        outState.putLong("TIMER_START_TIME", timerStartTime);
     }
 
     @Override
@@ -293,6 +325,7 @@ public class MainActivity extends AppCompatActivity {
         super.onRestoreInstanceState(savedInstanceState);
         progress = savedInstanceState.getFloat(TimerConstants.PREF_PROGRESS_SECONDS);
         isTimerActive = savedInstanceState.getBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE);
+        timerStartTime = savedInstanceState.getLong("TIMER_START_TIME", 0);
 
         if (isTimerActive) {
             CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);

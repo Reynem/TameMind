@@ -86,5 +86,8 @@
     <string name="_0">0%</string>
     <string name="_0h_0m">0h 0m</string>
 
+    <string name="your_progress_reduced">Your progress is reduced by half over the early stop of the timer</string>
+    <string name="penalty">Penalty!</string>
+
 
 </resources>

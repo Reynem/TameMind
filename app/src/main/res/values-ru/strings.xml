@@ -85,4 +85,7 @@
     <string name="_0">0%</string>
     <string name="_0h_0m">0ч 0м</string>
 
+    <string name="your_progress_reduced">Ваш прогресс уменьшен в два раза за досрочную остановку таймера</string>
+    <string name="penalty">Штраф!</string>
+
 </resources>
