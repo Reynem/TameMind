@@ -21,13 +21,13 @@ public class NotificationFarm {
         notificationManager.createNotificationChannel(channel);
 
         Notification notification = new NotificationCompat.Builder(context, channelId)
-                .setSmallIcon(R.drawable.ic_small_icon)
+                .setSmallIcon(R.drawable.tamemind_ico)
                 .setContentTitle(title)
                 .setContentText(message)
                 .build();
 
         notificationManager.notify(1, notification);
 
-        Log.d("Success", "Уведомление показано успешно");
+        Log.d("Success", "Notification was sent");
     }
 }

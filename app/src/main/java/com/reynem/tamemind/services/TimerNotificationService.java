@@ -149,7 +149,7 @@ public class TimerNotificationService extends Service {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setContentTitle("Focus Session Active")
                 .setContentText("Time remaining: " + timeText)
-                .setSmallIcon(R.drawable.ic_launcher_foreground)
+                .setSmallIcon(R.drawable.tamemind_ico)
                 .setContentIntent(pendingIntent)
                 .setOngoing(true)
                 .setSilent(true)

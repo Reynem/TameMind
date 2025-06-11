@@ -10,6 +10,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
+import com.reynem.tamemind.utils.TimerConstants;
 
 public class BlockedActivity extends AppCompatActivity {
 
@@ -25,8 +26,8 @@ public class BlockedActivity extends AppCompatActivity {
         });
 
         TextView timeRemainingText = findViewById(R.id.block_time);
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        long blockUntil = prefs.getLong("block_until", 0);
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        long blockUntil = prefs.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
         long currentTime = System.currentTimeMillis();
         long timeRemaining = blockUntil - currentTime;
 
