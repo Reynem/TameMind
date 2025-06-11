@@ -1,26 +1,139 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:gravity="center"
-    android:orientation="vertical"
     tools:context=".PinActivity"
-    android:padding="20dp">
+    android:background="?attr/colorSurface"> <View
+    android:id="@+id/topBackground"
+    android:layout_width="0dp"
+    android:layout_height="200dp"
+    android:background="@drawable/gradient_background"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
-        android:id="@+id/pinInput"
+    <TextView
+        android:id="@+id/pinTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="@string/insert_pin"
-        android:inputType="numberPassword"
-        android:maxLength="4"
-        android:textSize="20sp"/>
+        android:layout_marginTop="60dp"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/enter_your_pin"
+        android:textColor="@color/white"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="TextContrastCheck" />
 
-    <Button
-        android:id="@+id/confirmButton"
-        android:layout_width="wrap_content"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/pinCard"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/submit"
-        android:layout_marginTop="20dp"/>
-</LinearLayout>
+        android:layout_marginHorizontal="24dp"
+        android:layout_marginTop="140dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="12dp"
+        app:cardBackgroundColor="?attr/colorSurface"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="32dp">
+
+            <LinearLayout
+                android:id="@+id/pinInputContainer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@+id/confirmButton">
+
+                <EditText
+                    android:id="@+id/pin1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="10dp"
+                    android:autofillHints=""
+                    android:background="@drawable/pin_box_background"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:maxLength="1"
+                    android:nextFocusRight="@+id/pin2"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+                <EditText
+                    android:id="@+id/pin2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="10dp"
+                    android:autofillHints=""
+                    android:background="@drawable/pin_box_background"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:maxLength="1"
+                    android:nextFocusRight="@+id/pin3"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+                <EditText
+                    android:id="@+id/pin3"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_marginEnd="10dp"
+                    android:autofillHints=""
+                    android:background="@drawable/pin_box_background"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:maxLength="1"
+                    android:nextFocusRight="@+id/pin4"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+
+                <EditText
+                    android:id="@+id/pin4"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:autofillHints=""
+                    android:background="@drawable/pin_box_background"
+                    android:gravity="center"
+                    android:inputType="numberPassword"
+                    android:maxLength="1"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="24sp"
+                    tools:ignore="LabelFor,SpeakableTextPresentCheck" />
+            </LinearLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/confirmButton"
+                style="@style/PrimaryButton"
+                android:layout_width="0dp"
+                android:layout_height="56dp"
+                android:layout_marginTop="32dp"
+                android:text="@string/submit"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pinInputContainer"
+                tools:ignore="TextContrastCheck" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

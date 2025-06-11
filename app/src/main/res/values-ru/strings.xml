@@ -28,6 +28,8 @@
     <string name="enter">Ввод</string>
     <string name="submit">Отправить</string>
     <string name="insert_pin">Введите PIN-код</string>
+    <string name="enter_your_pin">Введите свой пин код</string>
+    <string name="pin_advice">PIN должен содержать 4 цифры</string>
     <string name="No_access">Доступ ограничен</string>
     <string name="return_toMainActivity">Вернуться</string>
     <string name="settings">Настройки</string>
@@ -89,5 +91,7 @@
     <string name="penalty">Штраф!</string>
 
     <string name="service_stopped">Сервис остановлен</string>
+    <string name="incorrect_pin">Неверный PIN</string>
+    <string name="pin_is_established">PIN установлен</string>
 
 </resources>

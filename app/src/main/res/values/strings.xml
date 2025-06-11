@@ -29,6 +29,8 @@
     <string name="enter">Enter</string>
     <string name="submit">Submit</string>
     <string name="insert_pin">Insert PIN</string>
+    <string name="enter_your_pin">Enter your pin code</string>
+    <string name="pin_advice">PIN must contain 4 numbers</string>
     <string name="No_access">Limited Access</string>
     <string name="return_toMainActivity">Return</string>
     <string name="settings">Settings</string>
@@ -90,6 +92,8 @@
     <string name="penalty">Penalty!</string>
 
     <string name="service_stopped">Service stopped</string>
+    <string name="incorrect_pin">Incorrect PIN</string>
+    <string name="pin_is_established">PIN established</string>
 
 
 </resources>
