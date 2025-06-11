@@ -89,5 +89,7 @@
     <string name="your_progress_reduced">Your progress is reduced by half over the early stop of the timer</string>
     <string name="penalty">Penalty!</string>
 
+    <string name="service_stopped">Service stopped</string>
+
 
 </resources>

@@ -29,6 +29,7 @@ import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
+import com.reynem.tamemind.utils.TimerConstants;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -98,7 +99,7 @@ public class SettingsActivity extends AppCompatActivity {
         Button btnRemove = findViewById(R.id.btn_remove);
         appsContainer = findViewById(R.id.appsContainer);
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
-        prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
+        prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
 
         @SuppressLint("CutPasteId")
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);
@@ -113,7 +114,7 @@ public class SettingsActivity extends AppCompatActivity {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
             if (app != null) {
-                Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
+                Set<String> allowedApps = prefs.getStringSet(TimerConstants.PREF_ALLOWED_APPS, AppBlockerService.getDefaultAllowedApps());
                 if (!allowedApps.contains(app.packageName)) {
                     AppBlockerService.addAllowedApp(prefs, app.packageName);
                     updateAllowedAppsUI();
@@ -131,7 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
             String input = editAppName.getText().toString().trim().toLowerCase();
             AppInfo app = appMap.get(input);
             if (app != null) {
-                Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
+                Set<String> allowedApps = prefs.getStringSet(TimerConstants.PREF_ALLOWED_APPS, AppBlockerService.getDefaultAllowedApps());
                 if (allowedApps.contains(app.packageName)) {
                     AppBlockerService.removeAllowedApp(prefs, app.packageName);
                     updateAllowedAppsUI();
@@ -149,7 +150,7 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void updateAllowedAppsUI() {
-        Set<String> allowedApps = prefs.getStringSet("allowed_apps", AppBlockerService.getDefaultAllowedApps());
+        Set<String> allowedApps = prefs.getStringSet(TimerConstants.PREF_ALLOWED_APPS, AppBlockerService.getDefaultAllowedApps());
         appsContainer.removeAllViews();
         if (allowedApps.isEmpty()) {
             emptyStateLayout.setVisibility(View.VISIBLE);

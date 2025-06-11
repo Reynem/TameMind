@@ -88,4 +88,6 @@
     <string name="your_progress_reduced">Ваш прогресс уменьшен в два раза за досрочную остановку таймера</string>
     <string name="penalty">Штраф!</string>
 
+    <string name="service_stopped">Сервис остановлен</string>
+
 </resources>
