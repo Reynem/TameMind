@@ -21,6 +21,7 @@ import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
+import com.reynem.tamemind.utils.TimerConstants;
 
 import java.util.Locale;
 
@@ -81,8 +82,8 @@ public class FarmActivity extends AppCompatActivity {
         TextView totalFocusTime = findViewById(R.id.totalFocusTime);
         TextView timeToNext = findViewById(R.id.timeToNext);
 
-        SharedPreferences prefs = getSharedPreferences("app_prefs", MODE_PRIVATE);
-        long totalTime = prefs.getLong("get_all_time", 0L);
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        long totalTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
 
         AnimalsLevelManager manager = new AnimalsLevelManager();
         AnimalsLevel level = manager.getCurrentLevel(totalTime);
