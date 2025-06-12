@@ -10,4 +10,5 @@ public class TimerConstants {
     public static final String PREF_GET_ALL_TIME = "get_all_time";
     public static final String PREF_LAST_TIMER_VALUE = "last_timer_value";
     public static final String PREF_ALLOWED_APPS = "allowed_apps";
+    public static final String PREF_TIMER_HISTORY = "timer_history";
 }
