@@ -17,6 +17,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.progressindicator.LinearProgressIndicator;
+import com.reynem.tamemind.history.HistoryActivity;
 import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.navigation.NavigationManager;
@@ -66,6 +67,9 @@ public class FarmActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_settings) {
                 startActivity(new Intent(this, SettingsActivity.class));
+                return true;
+            } else if (id == R.id.nav_history){
+                startActivity(new Intent(this, HistoryActivity.class));
                 return true;
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();

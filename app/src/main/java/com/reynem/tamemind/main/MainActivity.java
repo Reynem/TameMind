@@ -41,6 +41,8 @@ import com.reynem.tamemind.services.TimerNotificationService;
 import com.reynem.tamemind.settings.SettingsActivity;
 import com.reynem.tamemind.utils.NotificationFarm;
 import com.reynem.tamemind.utils.TimerConstants;
+import com.reynem.tamemind.history.HistoryManager;
+import com.reynem.tamemind.history.HistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
@@ -54,6 +56,7 @@ public class MainActivity extends AppCompatActivity {
     private Runnable timerRunnable;
     private boolean isTimerActive = false;
     private final MotivationMessages motivationMessages = new MotivationMessages();
+    private HistoryManager historyManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,6 +100,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_farm) {
                 startActivity(new Intent(this, FarmActivity.class));
                 return true;
+            } else if (id == R.id.nav_history){
+                startActivity(new Intent(this, HistoryActivity.class));
+                return true;
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();
                 return true;
@@ -109,6 +115,8 @@ public class MainActivity extends AppCompatActivity {
         // Initialization of list of messages
         motivationMessages.initializeMotivationMessages(appResources);
         motivationMessages.updateMotivationMessage(motivationTextView);
+
+        historyManager = new HistoryManager(this);
 
         CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
         startTimer = findViewById(R.id.startTimer);
@@ -207,8 +215,15 @@ public class MainActivity extends AppCompatActivity {
 
     private void finishTimer(CircularSeekBar circularSeekBar, boolean shouldSendNotification) {
         boolean wasEarlyStopped = false;
+        long sessionStartTime = timerStartTime;
+        long sessionEndTime = System.currentTimeMillis();
+        int originalDurationMinutes = 0;
 
         if (isTimerActive && timerStartTime > 0) {
+            SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+            float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
+            originalDurationMinutes = (int) lastTimerValue;
+
             long elapsedTime = System.currentTimeMillis() - timerStartTime;
             if (elapsedTime > 5000 && !shouldSendNotification) {
                 wasEarlyStopped = true;
@@ -225,14 +240,15 @@ public class MainActivity extends AppCompatActivity {
         startTimer.setVisibility(View.VISIBLE);
         endTimer.setVisibility(View.INVISIBLE);
 
-        if (shouldSendNotification) {
+        if (shouldSendNotification && sessionStartTime > 0) {
+            historyManager.saveCompletedSession(sessionStartTime, sessionEndTime, originalDurationMinutes);
             sendSuccessNotification();
         } else if (wasEarlyStopped) {
             sendPenaltyNotification();
         }
 
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
+        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
         circularSeekBar.setProgress(lastTimerValue);
     }
 

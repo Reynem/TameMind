@@ -24,6 +24,7 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.google.android.material.navigation.NavigationView;
+import com.reynem.tamemind.history.HistoryActivity;
 import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
@@ -88,6 +89,9 @@ public class SettingsActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_farm) {
                 startActivity(new Intent(this, FarmActivity.class));
+                return true;
+            } else if (id == R.id.nav_history) {
+                startActivity(new Intent(this, HistoryActivity.class));
                 return true;
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();

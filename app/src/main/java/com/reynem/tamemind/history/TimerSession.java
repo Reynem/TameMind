@@ -3,6 +3,7 @@ package com.reynem.tamemind.history;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Objects;
 
 public class TimerSession {
     private final long startTime;
@@ -57,5 +58,20 @@ public class TimerSession {
         } else {
             return durationMinutes + "m";
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimerSession session = (TimerSession) o;
+        return startTime == session.startTime &&
+                endTime == session.endTime &&
+                durationMinutes == session.durationMinutes;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, endTime, durationMinutes);
     }
 }
