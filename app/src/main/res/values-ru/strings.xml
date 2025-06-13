@@ -94,4 +94,19 @@
     <string name="incorrect_pin">Неверный PIN</string>
     <string name="pin_is_established">PIN установлен</string>
 
+    <string name="timer_history">История таймера</string>
+    <string name="statistics">Статистика</string>
+    <string name="total_sessions">%d сессий</string>
+    <string name="total_sessions_label">Всего</string>
+    <string name="today">Сегодня</string>
+    <string name="this_week">На этой неделе</string>
+    <string name="session_history">История сессий</string>
+    <string name="clear">Очистить</string>
+    <string name="clear_history">Очистить историю</string>
+    <string name="clear_history_confirmation">Вы уверены, что хотите очистить всю историю сессий? Это действие невозможно отменить.</string>
+    <string name="cancel">Отмена</string>
+    <string name="no_sessions_yet">Пока нет завершенных сессий.\nЗапустите таймер и завершите его, чтобы увидеть свою историю!</string>
+    <string name="open_menu">Открыть меню</string>
+    <string name="nav_history">История</string>
+
 </resources>

@@ -95,5 +95,20 @@
     <string name="incorrect_pin">Incorrect PIN</string>
     <string name="pin_is_established">PIN established</string>
 
+    <string name="timer_history">Timer History</string>
+    <string name="statistics">Statistics</string>
+    <string name="total_sessions">%d</string>
+    <string name="total_sessions_label">Sessions</string>
+    <string name="today">Today</string>
+    <string name="this_week">This Week</string>
+    <string name="session_history">Session History</string>
+    <string name="clear">Clear</string>
+    <string name="clear_history">Clear History</string>
+    <string name="clear_history_confirmation">Are you sure you want to clear all session history? This action cannot be undone.</string>
+    <string name="cancel">Cancel</string>
+    <string name="no_sessions_yet">No completed sessions yet.\nStart a timer and complete it to see your history!</string>
+    <string name="open_menu">Open menu</string>
+    <string name="nav_history">History</string>
+    <string name="_0m" translatable="false">0m</string>
 
 </resources>

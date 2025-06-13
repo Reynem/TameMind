@@ -46,6 +46,13 @@
     <color name="warning_amber">#FFC107</color>
     <color name="error_red">#F44336</color>
 
+    <color name="secondary_text">#666666</color>
+    <color name="primary_color">#4CAF50</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_border">#E0E0E0</color>
+    <color name="success_color">#4CAF50</color>
+    <color name="background_color">#F5F5F5</color>
+
 
     <color name="md_theme_light_primary">#6750A4</color>
     <color name="md_theme_light_onPrimary">#FFFFFF</color>

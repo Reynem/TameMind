@@ -19,7 +19,6 @@
             tools:context=".main.MainActivity"
             android:background="?attr/colorSurface">
 
-            <!-- Верхняя панель с градиентом -->
             <View
                 android:id="@+id/topBackground"
                 android:layout_width="0dp"
@@ -29,7 +28,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Кнопка меню с современным стилем -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/navCard"
                 android:layout_width="48dp"
@@ -52,7 +50,6 @@
                     app:tint="@color/primary_red" />
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Приветственный текст -->
             <TextView
                 android:id="@+id/welcomeText"
                 android:layout_width="wrap_content"
@@ -67,7 +64,6 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <!-- Карточка с таймером -->
             <com.google.android.material.card.MaterialCardView
                 android:id="@+id/timerCard"
                 android:layout_width="0dp"
@@ -86,7 +82,6 @@
                     android:layout_height="wrap_content"
                     android:padding="32dp">
 
-                    <!-- Круговой прогресс-бар -->
                     <me.tankery.lib.circularseekbar.CircularSeekBar
                         android:id="@+id/circularSeekBar"
                         android:layout_width="0dp"
@@ -109,7 +104,6 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <!-- Время в центре -->
                     <TextView
                         android:id="@+id/timeLeft"
                         android:layout_width="wrap_content"
@@ -124,7 +118,6 @@
                         app:layout_constraintStart_toStartOf="@+id/circularSeekBar"
                         app:layout_constraintTop_toTopOf="@+id/circularSeekBar" />
 
-                    <!-- Кнопки -->
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/startTimer"
                         style="@style/PrimaryButton"
@@ -155,7 +148,6 @@
                 </androidx.constraintlayout.widget.ConstraintLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- Мотивационное сообщение -->
             <TextView
                 android:id="@+id/motivation"
                 android:layout_width="0dp"
