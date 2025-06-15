@@ -26,6 +26,11 @@
         android:title="@string/farmMenu" />
 
     <item
+        android:id="@+id/nav_shop"
+        android:icon="@drawable/shop_icon"
+        android:title="@string/shop" />
+
+    <item
         android:id="@+id/nav_language"
         android:icon="@drawable/language"
         android:title="@string/language_en"/>

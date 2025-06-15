@@ -108,5 +108,13 @@
     <string name="no_sessions_yet">Пока нет завершенных сессий.\nЗапустите таймер и завершите его, чтобы увидеть свою историю!</string>
     <string name="open_menu">Открыть меню</string>
     <string name="nav_history">История</string>
+    <string name="fox">Лиса</string>
+    <string name="purchase">Купить</string>
+    <string name="earn_coins_by_focusing">Получай монеты с фокусом</string>
+    <string name="your_focus_coins">Ваши фокус монетки</string>
+    <string name="shop">Магазин</string>
+    <string name="owned">Владеющий</string>
+    <string name="available_animals">Доступные животные</string>
+    <string name="__0">0</string>
 
 </resources>
