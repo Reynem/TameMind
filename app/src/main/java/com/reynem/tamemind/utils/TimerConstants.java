@@ -11,4 +11,7 @@ public class TimerConstants {
     public static final String PREF_LAST_TIMER_VALUE = "last_timer_value";
     public static final String PREF_ALLOWED_APPS = "allowed_apps";
     public static final String PREF_TIMER_HISTORY = "timer_history";
+    public static final String PREF_KEY_COINS = "user_coins";
+    public static final String PREF_KEY_ANIMAL_PREFIX = "animal_unlocked_";
+    public static final String PREF_TIMER_START_TIME = "pref_timer_start_time";
 }

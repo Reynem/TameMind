@@ -14,6 +14,8 @@ import androidx.core.app.NotificationCompat;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.utils.TimerConstants;
+import com.reynem.tamemind.history.HistoryManager;
+import com.reynem.tamemind.utils.NotificationFarm;
 
 public class TimerNotificationService extends Service {
     private static final String CHANNEL_ID = TimerConstants.TIMER_NOTIFICATION_CHANNEL_ID;
@@ -25,12 +27,15 @@ public class TimerNotificationService extends Service {
     private NotificationManager notificationManager;
     private boolean isRunning = false;
 
+    private HistoryManager historyManager;
+
     @Override
     public void onCreate() {
         super.onCreate();
         Log.d(TAG, "Service created");
         handler = new Handler();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        historyManager = new HistoryManager(this);
         createNotificationChannel();
     }
 
@@ -80,7 +85,6 @@ public class TimerNotificationService extends Service {
         Log.d(TAG, "Starting timer notification");
 
         updateNotificationNow();
-
         updateRunnable = new Runnable() {
             @Override
             public void run() {
@@ -88,8 +92,6 @@ public class TimerNotificationService extends Service {
                 long blockUntil = prefs.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
                 long currentTime = System.currentTimeMillis();
                 long timeRemaining = blockUntil - currentTime;
-
-                Log.d(TAG, "Block until: " + blockUntil + ", Current: " + currentTime + ", Remaining: " + timeRemaining);
 
                 if (timeRemaining > 0) {
                     int minutes = (int) (timeRemaining / (60 * 1000));
@@ -105,12 +107,26 @@ public class TimerNotificationService extends Service {
                     updateNotification(timeText);
                     handler.postDelayed(this, 1000);
                 } else {
-                    Log.d(TAG, "Timer ended, stopping service");
+                    Log.d(TAG, "Timer ended, processing session completion");
+
+                    long sessionStartTime = prefs.getLong(TimerConstants.PREF_TIMER_START_TIME, 0);
+                    float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 0);
+                    int originalDurationMinutes = (int) lastTimerValue;
+
+                    if (sessionStartTime > 0) {
+                        historyManager.saveCompletedSession(sessionStartTime, System.currentTimeMillis(), originalDurationMinutes);
+
+                        int coinsEarned = calculateCoinsForSession(originalDurationMinutes);
+                        addCoins(coinsEarned);
+
+                        sendSuccessNotification(coinsEarned);
+                    }
+
+                    clearBlockTime();
                     stopSelf();
                 }
             }
         };
-
         handler.postDelayed(updateRunnable, 1000);
     }
 
@@ -164,5 +180,43 @@ public class TimerNotificationService extends Service {
         } catch (Exception e) {
             Log.e(TAG, "Failed to update notification", e);
         }
+    }
+
+    private int getCoins() {
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        return prefs.getInt(TimerConstants.PREF_KEY_COINS, 0);
+    }
+
+    private void saveCoins(int coins) {
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        prefs.edit()
+                .putInt(TimerConstants.PREF_KEY_COINS, Math.max(0, coins))
+                .apply();
+    }
+
+    private void addCoins(int amount) {
+        int currentCoins = getCoins();
+        saveCoins(currentCoins + amount);
+    }
+
+    private int calculateCoinsForSession(int minutes) {
+        int baseCoins = (minutes / 5) * 100;
+        int bonus = 0;
+        if (minutes >= 60) bonus = 500;
+        else if (minutes >= 45) bonus = 300;
+        else if (minutes >= 30) bonus = 200;
+        else if (minutes >= 15) bonus = 100;
+        return baseCoins + bonus;
+    }
+
+    private void sendSuccessNotification(int coinsEarned) {
+        NotificationFarm notificationFarm = new NotificationFarm();
+        String message = getString(R.string.session_completed_with_coins, coinsEarned);
+        notificationFarm.showNotification(this, getString(R.string.success), message);
+    }
+
+    private void clearBlockTime() {
+        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
     }
 }

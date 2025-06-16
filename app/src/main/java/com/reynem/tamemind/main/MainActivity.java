@@ -39,6 +39,8 @@ import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.services.TimerNotificationService;
 import com.reynem.tamemind.settings.SettingsActivity;
+import com.reynem.tamemind.shop.ShopActivity;
+import com.reynem.tamemind.utils.CoinsManager;
 import com.reynem.tamemind.utils.NotificationFarm;
 import com.reynem.tamemind.utils.TimerConstants;
 import com.reynem.tamemind.history.HistoryManager;
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private float progress;
     private long lastClickTime = 0;
     private long timerStartTime = 0;
-    private TextView shownTime, motivationTextView;
+    private TextView shownTime, motivationTextView, coinsDisplay;
     private Button startTimer, endTimer;
     private NavigationManager navigationManager;
     private DrawerLayout drawerLayout;
@@ -57,6 +59,9 @@ public class MainActivity extends AppCompatActivity {
     private boolean isTimerActive = false;
     private final MotivationMessages motivationMessages = new MotivationMessages();
     private HistoryManager historyManager;
+    private CoinsManager coinsManager;
+
+    private SharedPreferences sharedPreferences;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +73,10 @@ public class MainActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        sharedPreferences = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+        coinsDisplay = findViewById(R.id.coinsAmount);
+        coinsManager = new CoinsManager(this);
 
         checkNotificationPermission();
 
@@ -106,6 +115,9 @@ public class MainActivity extends AppCompatActivity {
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();
                 return true;
+            } else if (id == R.id.nav_shop) {
+                startActivity(new Intent(this, ShopActivity.class));
+                return true;
             } else return id == R.id.nav_home;
         });
 
@@ -123,6 +135,8 @@ public class MainActivity extends AppCompatActivity {
         endTimer = findViewById(R.id.endTimer);
         shownTime = findViewById(R.id.timeLeft);
 
+        coinsManager.updateCoinsDisplay(coinsDisplay);
+
         circularSeekBar.setOnSeekBarChangeListener(new CircularSeekBar.OnCircularSeekBarChangeListener() {
             @Override
             public void onStopTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
@@ -132,8 +146,7 @@ public class MainActivity extends AppCompatActivity {
                 circularSeekBar.setProgress(progress);
                 shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
 
-                SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-                prefs.edit().putFloat(TimerConstants.PREF_LAST_TIMER_VALUE, progress).apply();
+                sharedPreferences.edit().putFloat(TimerConstants.PREF_LAST_TIMER_VALUE, progress).apply();
             }
 
             @Override
@@ -147,13 +160,12 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
+        float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25); // 25 by default
         circularSeekBar.setProgress(lastTimerValue);
         shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
         endTimer.setOnClickListener(v -> {
-            finishTimer(circularSeekBar, false);
+            finishTimer(circularSeekBar);
             progress = 0;
         });
 
@@ -178,21 +190,30 @@ public class MainActivity extends AppCompatActivity {
         motivationMessages.updateMotivationMessage(motivationTextView);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        coinsManager.updateCoinsDisplay(coinsDisplay);
+    }
+
     private void startCountdown(CircularSeekBar circularSeekBar) {
         if (isTimerActive) {
             handler.removeCallbacks(timerRunnable);
         }
         isTimerActive = true;
         timerStartTime = System.currentTimeMillis();
-
         int minutes = (int) (progress / 60);
         setBlockTime(minutes);
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(TimerConstants.PREF_TIMER_START_TIME, timerStartTime);
+        editor.apply();
+
         Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
         startForegroundService(timerServiceIntent);
 
         circularSeekBar.setDisablePointer(true);
         startTimer.setVisibility(View.INVISIBLE);
-
         timerRunnable = new Runnable() {
             @Override
             public void run() {
@@ -202,31 +223,27 @@ public class MainActivity extends AppCompatActivity {
                     int seconds = (int) (progress % 60);
                     circularSeekBar.setProgress(minutes);
                     shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
-
                     handler.postDelayed(this, 1000);
-                } else {
-                    finishTimer(circularSeekBar, true);
+                } else{
+                    finishTimer(circularSeekBar);
                 }
             }
         };
-
         handler.postDelayed(timerRunnable, 1000);
     }
 
-    private void finishTimer(CircularSeekBar circularSeekBar, boolean shouldSendNotification) {
-        boolean wasEarlyStopped = false;
+    private void finishTimer(CircularSeekBar circularSeekBar) {
+        boolean wasNotEarlyStopped = false;
         long sessionStartTime = timerStartTime;
         long sessionEndTime = System.currentTimeMillis();
         int originalDurationMinutes = 0;
 
         if (isTimerActive && timerStartTime > 0) {
-            SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-            float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
-            originalDurationMinutes = (int) lastTimerValue;
+            float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
 
             long elapsedTime = System.currentTimeMillis() - timerStartTime;
-            if (elapsedTime > 5000 && !shouldSendNotification) {
-                wasEarlyStopped = true;
+            if (elapsedTime > 5000 && lastTimerValue > 0)  {
+                wasNotEarlyStopped = true;
                 applyEarlyStopPenalty();
             }
         }
@@ -240,48 +257,46 @@ public class MainActivity extends AppCompatActivity {
         startTimer.setVisibility(View.VISIBLE);
         endTimer.setVisibility(View.INVISIBLE);
 
-        if (shouldSendNotification && sessionStartTime > 0) {
-            historyManager.saveCompletedSession(sessionStartTime, sessionEndTime, originalDurationMinutes);
-            sendSuccessNotification();
-        } else if (wasEarlyStopped) {
-            sendPenaltyNotification();
+        // Only penalty if not early stopped
+        if (wasNotEarlyStopped) {
+            android.util.Log.d("MainActivity", "Session was stopped early");
+            int coinsPenalty = coinsManager.calculatePenaltyCoins();
+            coinsManager.removeCoins(coinsPenalty);
+
+            sendPenaltyNotification(coinsPenalty);
         }
 
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
+        float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
         circularSeekBar.setProgress(lastTimerValue);
+        coinsManager.updateCoinsDisplay(coinsDisplay); // Update coins display after penalty
     }
 
     private void applyEarlyStopPenalty() {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        long allTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
+        long allTime = sharedPreferences.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
 
         long newAllTime = allTime / 2;
-        prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, newAllTime).apply();
+        sharedPreferences.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, newAllTime).apply();
     }
 
     private void setBlockTime(int minutes) {
         long blockUntil = System.currentTimeMillis() + ((long) minutes * 60 * 1000);
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().putLong(TimerConstants.PREF_BLOCK_UNTIL, blockUntil).apply();
-        long allTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
+        long allTime = sharedPreferences.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
         allTime += minutes;
-        prefs.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, allTime).apply();
+
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putLong(TimerConstants.PREF_BLOCK_UNTIL, blockUntil);
+        editor.putLong(TimerConstants.PREF_GET_ALL_TIME, allTime);
+        editor.apply();
     }
 
     private void clearBlockTime() {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
+        sharedPreferences.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
     }
 
-    private void sendSuccessNotification(){
+    private void sendPenaltyNotification(int coinsLost) {
         NotificationFarm notificationFarm = new NotificationFarm();
-        notificationFarm.showNotification(this, getString(R.string.success), getString(R.string.the_end_of_feeding_process));
-    }
-
-    private void sendPenaltyNotification(){
-        NotificationFarm notificationFarm = new NotificationFarm();
-        notificationFarm.showNotification(this, getString(R.string.penalty), getString(R.string.your_progress_reduced));
+        String message = getString(R.string.penalty_with_coins, coinsLost);
+        notificationFarm.showNotification(this, getString(R.string.penalty), message);
     }
 
     public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityServiceClass) {
