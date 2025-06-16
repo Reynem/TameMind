@@ -21,6 +21,7 @@ import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
+import com.reynem.tamemind.shop.ShopActivity;
 
 import java.util.List;
 
@@ -53,12 +54,11 @@ public class HistoryActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawerLayout);
 
         setupNavigation(navigationView);
-        setupViews(); // Сначала настраиваем View
-        loadHistoryData(); // Затем загружаем в них данные
+        setupViews();
+        loadHistoryData();
     }
 
     private void setupNavigation(NavigationView navigationView) {
-        // ... ваш код без изменений ...
         ImageView openButton = findViewById(R.id.openNav);
         openButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
 
@@ -82,7 +82,10 @@ public class HistoryActivity extends AppCompatActivity {
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();
                 return true;
-            } else return id == R.id.nav_history;
+            } else if (id == R.id.nav_shop){
+                startActivity(new Intent(this, ShopActivity.class));
+                return true;
+            }else return id == R.id.nav_history;
         });
     }
 
@@ -93,32 +96,22 @@ public class HistoryActivity extends AppCompatActivity {
         emptyStateText = findViewById(R.id.emptyStateText);
         recyclerView = findViewById(R.id.historyRecyclerView);
 
-        // --- ИЗМЕНЕНИЕ 1 ---
-        // Настраиваем RecyclerView и создаем адаптер ОДИН РАЗ здесь.
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new SessionHistoryAdapter(); // Используем новый конструктор
-        recyclerView.setAdapter(adapter); // Устанавливаем адаптер сразу
+        adapter = new SessionHistoryAdapter();
+        recyclerView.setAdapter(adapter);
 
-        // Кнопка очистки истории
         findViewById(R.id.clearHistoryButton).setOnClickListener(v -> showClearHistoryDialog());
     }
 
     private void loadHistoryData() {
         List<TimerSession> sessions = historyManager.getSessionHistory();
 
-        // Обновляем статистику
         totalSessionsText.setText(getString(R.string.total_sessions, historyManager.getTotalSessionsCount()));
         todayMinutesText.setText(formatMinutes(historyManager.getTotalMinutesToday()));
         weekMinutesText.setText(formatMinutes(historyManager.getTotalMinutesThisWeek()));
 
-
-        // --- ИЗМЕНЕНИЕ 2 ---
-        // Логика упростилась. Просто обновляем данные в адаптере.
-        // DiffUtil сам разберется, что делать (добавить, удалить или обновить элементы).
         adapter.updateSessions(sessions);
 
-
-        // Показываем список или пустое состояние (эта логика остается)
         if (sessions.isEmpty()) {
             recyclerView.setVisibility(View.GONE);
             emptyStateText.setVisibility(View.VISIBLE);
@@ -129,7 +122,6 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private String formatMinutes(int minutes) {
-        // ... ваш код без изменений ...
         if (minutes >= 60) {
             int hours = minutes / 60;
             int remainingMinutes = minutes % 60;
@@ -140,13 +132,12 @@ public class HistoryActivity extends AppCompatActivity {
     }
 
     private void showClearHistoryDialog() {
-        // ... ваш код без изменений ...
         new AlertDialog.Builder(this)
                 .setTitle(R.string.clear_history)
                 .setMessage(R.string.clear_history_confirmation)
                 .setPositiveButton(R.string.clear, (dialog, which) -> {
                     historyManager.clearHistory();
-                    loadHistoryData(); // Перезагружаем данные после очистки
+                    loadHistoryData();
                 })
                 .setNegativeButton(R.string.cancel, null)
                 .show();
@@ -155,8 +146,6 @@ public class HistoryActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        // onResume правильно вызывает loadHistoryData, чтобы обновлять
-        // список при возвращении на экран. Это остается без изменений.
         loadHistoryData();
     }
 }

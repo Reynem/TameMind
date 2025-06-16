@@ -30,6 +30,7 @@ import com.reynem.tamemind.R;
 import com.reynem.tamemind.blocker.AppBlockerService;
 import com.reynem.tamemind.farm.FarmActivity;
 import com.reynem.tamemind.navigation.NavigationManager;
+import com.reynem.tamemind.shop.ShopActivity;
 import com.reynem.tamemind.utils.TimerConstants;
 
 import java.util.ArrayList;
@@ -96,7 +97,10 @@ public class SettingsActivity extends AppCompatActivity {
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();
                 return true;
-            } else return id == R.id.nav_settings;
+            } else if (id == R.id.nav_shop){
+                startActivity(new Intent(this, ShopActivity.class));
+                return true;
+            }else return id == R.id.nav_settings;
         });
         editAppName = findViewById(R.id.edit_package_name);
         Button btnAdd = findViewById(R.id.btn_add);

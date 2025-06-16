@@ -22,14 +22,17 @@ import com.reynem.tamemind.main.MainActivity;
 import com.reynem.tamemind.R;
 import com.reynem.tamemind.navigation.NavigationManager;
 import com.reynem.tamemind.settings.SettingsActivity;
+import com.reynem.tamemind.shop.ShopActivity;
+import com.reynem.tamemind.utils.CoinsManager;
 import com.reynem.tamemind.utils.TimerConstants;
 
 import java.util.Locale;
 
 public class FarmActivity extends AppCompatActivity {
-
+    private TextView coinsDisplay;
     private NavigationManager navigationManager;
     private DrawerLayout drawerLayout;
+    private CoinsManager coinsManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +48,10 @@ public class FarmActivity extends AppCompatActivity {
         NavigationView navigationView = findViewById(R.id.navigationMenu);
         navigationManager = new NavigationManager(navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
+        coinsDisplay = findViewById(R.id.coinsAmount);
+        coinsManager = new CoinsManager(this);
+
+        coinsManager.updateCoinsDisplay(coinsDisplay);
 
         setupNavigation(navigationView);
         setupFarmDisplay();
@@ -73,6 +80,9 @@ public class FarmActivity extends AppCompatActivity {
                 return true;
             } else if (id == R.id.nav_language) {
                 navigationManager.showLanguageSelectionDialog();
+                return true;
+            } else if (id == R.id.nav_shop){
+                startActivity(new Intent(this, ShopActivity.class));
                 return true;
             } else return id == R.id.nav_farm;
         });
@@ -136,5 +146,11 @@ public class FarmActivity extends AppCompatActivity {
             int randomIndex = (int) (Math.random() * motivationalTexts.length);
             textView.setText(motivationalTexts[randomIndex]);
         }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        coinsManager.updateCoinsDisplay(coinsDisplay);
     }
 }
