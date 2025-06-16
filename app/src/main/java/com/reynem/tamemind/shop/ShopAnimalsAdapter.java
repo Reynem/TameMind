@@ -1,5 +1,6 @@
 package com.reynem.tamemind.shop;
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,6 +67,7 @@ public class ShopAnimalsAdapter extends RecyclerView.Adapter<ShopAnimalsAdapter.
             lockOverlay = itemView.findViewById(R.id.lockOverlay);
         }
 
+        @SuppressLint("SetTextI18n")
         public void bind(ShopAnimal animal, OnAnimalClickListener listener) {
             animalName.setText(animal.getNameResId());
             animalImage.setImageResource(animal.getImageResId());
@@ -79,7 +81,7 @@ public class ShopAnimalsAdapter extends RecyclerView.Adapter<ShopAnimalsAdapter.
                 lockOverlay.setVisibility(View.VISIBLE);
                 purchaseButton.setText(R.string.purchase);
                 purchaseButton.setEnabled(true);
-                animalPrice.setText(String.valueOf(animal.getPrice()));
+                animalPrice.setText(animal.getPrice() + " $");
                 animalPrice.setVisibility(View.VISIBLE);
             }
 
