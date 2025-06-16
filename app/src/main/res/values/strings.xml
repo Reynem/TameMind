@@ -111,12 +111,23 @@
     <string name="nav_history">History</string>
     <string name="_0m" translatable="false">0m</string>
     <string name="fox">Fox</string>
-    <string name="purchase">Purchase\n</string>
+    <string name="purchase">Purchase</string>
     <string name="earn_coins_by_focusing">Earn coins by focusing</string>
     <string name="your_focus_coins">Your focus coins</string>
     <string name="shop">Shop</string>
     <string name="owned">Owned</string>
     <string name="available_animals">Available animals</string>
     <string name="__0">0</string>
+    <string name="already_owned">Already owned</string>
+    <string name="confirm_purchase">Confirm purchase</string>
+    <string name="purchase_confirmation">Want to buy %1$s per %2$s coin?</string>
+    <string name="purchase_successful">%1$s successfully purchased!</string>
+    <string name="insufficient_funds_title">Insufficient funds</string>
+    <string name="insufficient_funds">You need more than %1$s coins for this purchase</string>
+    <string name="ok" translatable="false">OK</string>
+    <string name="session_completed_with_coins">Session completed! You got %d coins</string>
+    <string name="penalty_with_coins">Progress is reduced. Lost %d coins for early completion.</string>
+    <string name="hedgehog">Hedgehog</string>
+
 
 </resources>

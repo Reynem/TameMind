@@ -117,4 +117,16 @@
     <string name="available_animals">Доступные животные</string>
     <string name="__0">0</string>
 
+    <string name="already_owned">Уже куплено</string>
+    <string name="confirm_purchase">Подтвердить покупку</string>
+    <string name="purchase_confirmation">Хотите купить %1$s за %2$s монет?</string>
+    <string name="purchase_successful">%1$s успешно куплен!</string>
+    <string name="insufficient_funds_title">Недостаточно монет</string>
+    <string name="insufficient_funds">Вам нужно еще %1$s монет для этой покупки</string>
+
+    <string name="session_completed_with_coins">Сессия завершена! Вы получили %d монет!</string>
+    <string name="penalty_with_coins">Прогресс снижен. Потеряно %d монет за досрочное завершение.</string>
+    <string name="hedgehog">Ёжик</string>
+
+
 </resources>

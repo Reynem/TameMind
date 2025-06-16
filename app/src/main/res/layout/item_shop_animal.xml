@@ -17,6 +17,17 @@
         android:layout_height="wrap_content"
         android:padding="16dp">
 
+        <View
+            android:id="@+id/lockOverlay"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="#80000000"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/animalImageCard"
+            app:layout_constraintEnd_toEndOf="@id/animalImageCard"
+            app:layout_constraintStart_toStartOf="@id/animalImageCard"
+            app:layout_constraintTop_toTopOf="@id/animalImageCard" />
+
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/animalImageCard"
             android:layout_width="80dp"
@@ -36,17 +47,6 @@
                 android:src="@drawable/ic_launcher_background" />
 
         </com.google.android.material.card.MaterialCardView>
-
-        <View
-            android:id="@+id/lockOverlay"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:background="#80000000"
-            android:visibility="gone"
-            app:layout_constraintBottom_toBottomOf="@id/animalImageCard"
-            app:layout_constraintEnd_toEndOf="@id/animalImageCard"
-            app:layout_constraintStart_toStartOf="@id/animalImageCard"
-            app:layout_constraintTop_toTopOf="@id/animalImageCard" />
 
         <TextView
             android:id="@+id/animalName"
