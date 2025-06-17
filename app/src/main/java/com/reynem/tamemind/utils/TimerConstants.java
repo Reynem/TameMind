@@ -14,4 +14,5 @@ public class TimerConstants {
     public static final String PREF_KEY_COINS = "user_coins";
     public static final String PREF_KEY_ANIMAL_PREFIX = "animal_unlocked_";
     public static final String PREF_TIMER_START_TIME = "pref_timer_start_time";
+    public static final String PREF_SELECTED_ANIMAL = "selected_animal";
 }
