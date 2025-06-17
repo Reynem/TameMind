@@ -128,5 +128,12 @@
     <string name="penalty_with_coins">Прогресс снижен. Потеряно %d монет за досрочное завершение.</string>
     <string name="hedgehog">Ёжик</string>
 
+    <string name="select_animal">Выберите животное</string>
+    <string name="change_animal">Сменить животное</string>
+    <string name="no_animals_title">Нет животных</string>
+    <string name="no_animals_message">У вас пока нет разблокированных животных. Купите их в магазине!</string>
+    <string name="go_to_shop">В магазин</string>
+    <string name="animal_selected">%s выбран для фермы</string>
+
 
 </resources>

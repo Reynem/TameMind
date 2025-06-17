@@ -129,5 +129,12 @@
     <string name="penalty_with_coins">Progress is reduced. Lost %d coins for early completion.</string>
     <string name="hedgehog">Hedgehog</string>
 
+    <string name="select_animal">Select animal</string>
+    <string name="change_animal">Change animal</string>
+    <string name="no_animals_title">No animals</string>
+    <string name="no_animals_message">You don\'t have any unlocked animals yet. Buy them in the shop!</string>
+    <string name="go_to_shop">Go to shop</string>
+    <string name="animal_selected">%s selected for farm</string>
+
 
 </resources>
