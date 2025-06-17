@@ -62,6 +62,7 @@ public class ShopActivity extends AppCompatActivity {
         navigationManager = new NavigationManager(navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
         coinsDisplay = findViewById(R.id.coinsAmount);
+        coinsManager = new CoinsManager(this);
 
         setupNavigation(navigationView);
         setupShop();
