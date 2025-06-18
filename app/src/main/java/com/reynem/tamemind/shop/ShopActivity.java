@@ -106,8 +106,8 @@ public class ShopActivity extends AppCompatActivity {
 
         // Temporarily set the minimum price
         animals = Arrays.asList(
-                new ShopAnimal(R.string.fox, R.drawable.cutefox, 1, isAnimalUnlocked("fox")),
-                new ShopAnimal(R.string.hedgehog, R.drawable.cute_hedgehog, 2, isAnimalUnlocked("hedgehog"))
+                new ShopAnimal(R.string.fox, R.drawable.cutefox, 100, isAnimalUnlocked("fox")),
+                new ShopAnimal(R.string.hedgehog, R.drawable.cute_hedgehog, 200, isAnimalUnlocked("hedgehog"))
         );
 
         if (!isAnimalUnlocked("mouse")) {
