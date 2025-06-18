@@ -17,6 +17,8 @@ import com.reynem.tamemind.utils.TimerConstants;
 import com.reynem.tamemind.history.HistoryManager;
 import com.reynem.tamemind.utils.NotificationFarm;
 
+import java.util.Locale;
+
 public class TimerNotificationService extends Service {
     private static final String CHANNEL_ID = TimerConstants.TIMER_NOTIFICATION_CHANNEL_ID;
     private static final int NOTIFICATION_ID = TimerConstants.TIMER_NOTIFICATION_ID;
@@ -26,6 +28,7 @@ public class TimerNotificationService extends Service {
     private Runnable updateRunnable;
     private NotificationManager notificationManager;
     private boolean isRunning = false;
+    private SharedPreferences sharedPreferences;
 
     private HistoryManager historyManager;
 
@@ -36,6 +39,7 @@ public class TimerNotificationService extends Service {
         handler = new Handler();
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         historyManager = new HistoryManager(this);
+        sharedPreferences = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         createNotificationChannel();
     }
 
@@ -43,8 +47,14 @@ public class TimerNotificationService extends Service {
     public int onStartCommand(Intent intent, int flags, int startId) {
         Log.d(TAG, "Service started");
         if (!isRunning) {
-            startTimerNotification();
-            isRunning = true;
+            long blockUntil = sharedPreferences.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
+            if (blockUntil > System.currentTimeMillis()) {
+                startTimerNotification();
+                isRunning = true;
+            } else {
+                Log.d(TAG, "No active timer found, stopping service");
+                stopSelf();
+            }
         }
         return START_STICKY;
     }
@@ -85,69 +95,47 @@ public class TimerNotificationService extends Service {
         Log.d(TAG, "Starting timer notification");
 
         updateNotificationNow();
+
         updateRunnable = new Runnable() {
             @Override
             public void run() {
-                SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-                long blockUntil = prefs.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
+                long blockUntil = sharedPreferences.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
                 long currentTime = System.currentTimeMillis();
                 long timeRemaining = blockUntil - currentTime;
 
-                if (timeRemaining > 0) {
-                    int minutes = (int) (timeRemaining / (60 * 1000));
-                    int seconds = (int) ((timeRemaining / 1000) % 60);
+                if (timeRemaining > 1000) {
+                    int totalSeconds = (int) (timeRemaining / 1000);
+                    int minutes = totalSeconds / 60;
+                    int seconds = totalSeconds % 60;
 
-                    String timeText;
-                    if (seconds < 10) {
-                        timeText = minutes + ":0" + seconds;
-                    } else {
-                        timeText = minutes + ":" + seconds;
-                    }
-
+                    String timeText = String.format(Locale.US, "%d:%02d", minutes, seconds);
                     updateNotification(timeText);
+
                     handler.postDelayed(this, 1000);
                 } else {
-                    Log.d(TAG, "Timer ended, processing session completion");
-
-                    long sessionStartTime = prefs.getLong(TimerConstants.PREF_TIMER_START_TIME, 0);
-                    float lastTimerValue = prefs.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 0);
-                    int originalDurationMinutes = (int) lastTimerValue;
-
-                    if (sessionStartTime > 0) {
-                        historyManager.saveCompletedSession(sessionStartTime, System.currentTimeMillis(), originalDurationMinutes);
-
-                        int coinsEarned = calculateCoinsForSession(originalDurationMinutes);
-                        addCoins(coinsEarned);
-
-                        sendSuccessNotification(coinsEarned);
-                    }
-
-                    clearBlockTime();
-                    stopSelf();
+                    Log.d(TAG, "Timer completed naturally");
+                    handleTimerCompletion();
                 }
             }
         };
+
         handler.postDelayed(updateRunnable, 1000);
     }
 
     private void updateNotificationNow() {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        long blockUntil = prefs.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
+        long blockUntil = sharedPreferences.getLong(TimerConstants.PREF_BLOCK_UNTIL, 0);
         long currentTime = System.currentTimeMillis();
         long timeRemaining = blockUntil - currentTime;
 
         if (timeRemaining > 0) {
-            int minutes = (int) (timeRemaining / (60 * 1000));
-            int seconds = (int) ((timeRemaining / 1000) % 60);
+            int totalSeconds = (int) (timeRemaining / 1000);
+            int minutes = totalSeconds / 60;
+            int seconds = totalSeconds % 60;
 
-            String timeText;
-            if (seconds < 10) {
-                timeText = minutes + ":0" + seconds;
-            } else {
-                timeText = minutes + ":" + seconds;
-            }
-
+            String timeText = String.format(Locale.US, "%d:%02d", minutes, seconds);
             updateNotification(timeText);
+        } else {
+            handleTimerCompletion();
         }
     }
 
@@ -182,41 +170,88 @@ public class TimerNotificationService extends Service {
         }
     }
 
+    private void handleTimerCompletion() {
+        Log.d(TAG, "Processing timer completion");
+
+        long sessionStartTime = sharedPreferences.getLong(TimerConstants.PREF_TIMER_START_TIME, 0);
+        float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 0);
+        int originalDurationMinutes = (int) lastTimerValue;
+
+        if (sessionStartTime > 0) {
+            historyManager.saveCompletedSession(
+                    sessionStartTime,
+                    System.currentTimeMillis(),
+                    originalDurationMinutes
+            );
+
+            int coinsEarned = calculateCoinsForSession(originalDurationMinutes);
+            addCoins(coinsEarned);
+
+            sendSuccessNotification(coinsEarned);
+
+            Log.d(TAG, "Session completed successfully. Coins earned: " + coinsEarned);
+        } else {
+            Log.w(TAG, "No start time found for session");
+        }
+
+        clearBlockTime();
+
+        stopSelf();
+    }
+
     private int getCoins() {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        return prefs.getInt(TimerConstants.PREF_KEY_COINS, 0);
+        return sharedPreferences.getInt(TimerConstants.PREF_KEY_COINS, 0);
     }
 
     private void saveCoins(int coins) {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        prefs.edit()
+        sharedPreferences.edit()
                 .putInt(TimerConstants.PREF_KEY_COINS, Math.max(0, coins))
                 .apply();
     }
 
     private void addCoins(int amount) {
         int currentCoins = getCoins();
-        saveCoins(currentCoins + amount);
+        int newCoins = currentCoins + amount;
+        saveCoins(newCoins);
+        Log.d(TAG, "Coins added: " + amount + ", total: " + newCoins);
     }
 
     private int calculateCoinsForSession(int minutes) {
         int baseCoins = (minutes / 5) * 100;
+
         int bonus = 0;
-        if (minutes >= 60) bonus = 500;
-        else if (minutes >= 45) bonus = 300;
-        else if (minutes >= 30) bonus = 200;
-        else if (minutes >= 15) bonus = 100;
-        return baseCoins + bonus;
+        if (minutes >= 60) {
+            bonus = 500;
+        } else if (minutes >= 45) {
+            bonus = 300;
+        } else if (minutes >= 30) {
+            bonus = 200;
+        } else if (minutes >= 15) {
+            bonus = 100;
+        }
+
+        int totalCoins = baseCoins + bonus;
+        Log.d(TAG, "Calculated coins for " + minutes + " minutes: " + totalCoins + " (base: " + baseCoins + ", bonus: " + bonus + ")");
+
+        return totalCoins;
     }
 
     private void sendSuccessNotification(int coinsEarned) {
-        NotificationFarm notificationFarm = new NotificationFarm();
-        String message = getString(R.string.session_completed_with_coins, coinsEarned);
-        notificationFarm.showNotification(this, getString(R.string.success), message);
+        try {
+            NotificationFarm notificationFarm = new NotificationFarm();
+            String message = getString(R.string.session_completed_with_coins, coinsEarned);
+            notificationFarm.showNotification(this, getString(R.string.success), message);
+            Log.d(TAG, "Success notification sent");
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to send success notification", e);
+        }
     }
 
     private void clearBlockTime() {
-        SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
-        prefs.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.remove(TimerConstants.PREF_BLOCK_UNTIL);
+        editor.remove(TimerConstants.PREF_TIMER_START_TIME);
+        editor.apply();
+        Log.d(TAG, "Block time cleared");
     }
 }

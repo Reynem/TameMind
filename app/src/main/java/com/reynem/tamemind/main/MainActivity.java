@@ -43,12 +43,12 @@ import com.reynem.tamemind.shop.ShopActivity;
 import com.reynem.tamemind.utils.CoinsManager;
 import com.reynem.tamemind.utils.NotificationFarm;
 import com.reynem.tamemind.utils.TimerConstants;
+import com.reynem.tamemind.utils.TimerSyncHelper;
 import com.reynem.tamemind.history.HistoryManager;
 import com.reynem.tamemind.history.HistoryActivity;
 
 public class MainActivity extends AppCompatActivity {
     private final Handler handler = new Handler();
-    private float progress;
     private long lastClickTime = 0;
     private long timerStartTime = 0;
     private TextView shownTime, motivationTextView, coinsDisplay;
@@ -60,6 +60,7 @@ public class MainActivity extends AppCompatActivity {
     private final MotivationMessages motivationMessages = new MotivationMessages();
     private HistoryManager historyManager;
     private CoinsManager coinsManager;
+    private TimerSyncHelper timerSyncHelper;
 
     private SharedPreferences sharedPreferences;
 
@@ -77,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         coinsDisplay = findViewById(R.id.coinsAmount);
         coinsManager = new CoinsManager(this);
+        timerSyncHelper = new TimerSyncHelper(this);
 
         checkNotificationPermission();
 
@@ -141,7 +143,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onStopTrackingTouch(@Nullable CircularSeekBar circularSeekBar) {
                 assert circularSeekBar != null;
-                progress = circularSeekBar.getProgress();
+                float progress = circularSeekBar.getProgress();
                 if (progress % 5 != 0) progress -= (progress % 5);
                 circularSeekBar.setProgress(progress);
                 shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) progress, 0));
@@ -164,9 +166,10 @@ public class MainActivity extends AppCompatActivity {
         circularSeekBar.setProgress(lastTimerValue);
         shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
 
+        checkForActiveTimer(circularSeekBar);
+
         endTimer.setOnClickListener(v -> {
             finishTimer(circularSeekBar);
-            progress = 0;
         });
 
         startTimer.setOnClickListener(v -> {
@@ -176,11 +179,8 @@ public class MainActivity extends AppCompatActivity {
 
             if (isTimerActive) return;
 
-            progress = circularSeekBar.getProgress() * 60;
-            shownTime = findViewById(R.id.timeLeft);
-            startTimer.setVisibility(View.INVISIBLE);
-            endTimer.setVisibility(View.VISIBLE);
-            startCountdown(circularSeekBar);
+            float timerMinutes = circularSeekBar.getProgress();
+            startCountdown(circularSeekBar, timerMinutes);
         });
     }
 
@@ -188,109 +188,154 @@ public class MainActivity extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         motivationMessages.updateMotivationMessage(motivationTextView);
+
+        CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
+        checkForActiveTimer(circularSeekBar);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         coinsManager.updateCoinsDisplay(coinsDisplay);
+
+        CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
+        checkForActiveTimer(circularSeekBar);
     }
 
-    private void startCountdown(CircularSeekBar circularSeekBar) {
+    /**
+     * Checks if there is an active timer and synchronizes the UI
+     */
+    private void checkForActiveTimer(CircularSeekBar circularSeekBar) {
+        TimerSyncHelper.TimerState timerState = timerSyncHelper.getTimerState();
+
+        if (timerState.isActive) {
+            if (!isTimerActive) {
+                timerStartTime = timerState.startTime;
+                isTimerActive = true;
+                startTimer.setVisibility(View.INVISIBLE);
+                endTimer.setVisibility(View.VISIBLE);
+                circularSeekBar.setDisablePointer(true);
+
+                startSynchronizedTimer(circularSeekBar);
+            }
+        } else {
+            if (isTimerActive) {
+                finishTimerSilently(circularSeekBar);
+            }
+        }
+    }
+
+    private void startCountdown(CircularSeekBar circularSeekBar, float minutes) {
         if (isTimerActive) {
             handler.removeCallbacks(timerRunnable);
         }
+
         isTimerActive = true;
         timerStartTime = System.currentTimeMillis();
-        int minutes = (int) (progress / 60);
-        setBlockTime(minutes);
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(TimerConstants.PREF_TIMER_START_TIME, timerStartTime);
-        editor.apply();
+        timerSyncHelper.setBlockTime((int) minutes);
 
         Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
         startForegroundService(timerServiceIntent);
 
         circularSeekBar.setDisablePointer(true);
         startTimer.setVisibility(View.INVISIBLE);
+        endTimer.setVisibility(View.VISIBLE);
+
+        startSynchronizedTimer(circularSeekBar);
+    }
+
+    /**
+     * Starts a timer synchronized with SharedPreferences
+     */
+    private void startSynchronizedTimer(CircularSeekBar circularSeekBar) {
+        if (timerRunnable != null) {
+            handler.removeCallbacks(timerRunnable);
+        }
+
         timerRunnable = new Runnable() {
             @Override
             public void run() {
-                if (progress > 0) {
-                    progress--;
-                    int minutes = (int) (progress / 60);
-                    int seconds = (int) (progress % 60);
-                    circularSeekBar.setProgress(minutes);
-                    shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
+                TimerSyncHelper.TimerTime remainingTime = timerSyncHelper.getRemainingMinutesAndSeconds();
+
+                if (timerSyncHelper.isTimerActive()) {
+                    int displayMinutes = Math.max(0, remainingTime.minutes + (remainingTime.seconds > 0 ? 1 : 0));
+                    circularSeekBar.setProgress(displayMinutes);
+                    shownTime.setText(remainingTime.getFormattedTime());
+
                     handler.postDelayed(this, 1000);
-                } else{
+                } else {
                     finishTimer(circularSeekBar);
                 }
             }
         };
-        handler.postDelayed(timerRunnable, 1000);
+        handler.postDelayed(timerRunnable, 100);
     }
 
     private void finishTimer(CircularSeekBar circularSeekBar) {
         boolean wasNotEarlyStopped = false;
-        long sessionStartTime = timerStartTime;
-        long sessionEndTime = System.currentTimeMillis();
-        int originalDurationMinutes = 0;
 
         if (isTimerActive && timerStartTime > 0) {
-            float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
-
-            long elapsedTime = System.currentTimeMillis() - timerStartTime;
-            if (elapsedTime > 5000 && lastTimerValue > 0)  {
-                wasNotEarlyStopped = true;
-                applyEarlyStopPenalty();
-            }
+            wasNotEarlyStopped = timerSyncHelper.wasStoppedEarly();
         }
 
-        isTimerActive = false;
-        timerStartTime = 0;
-        clearBlockTime();
-        Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
-        stopService(timerServiceIntent);
-        circularSeekBar.setDisablePointer(false);
-        startTimer.setVisibility(View.VISIBLE);
-        endTimer.setVisibility(View.INVISIBLE);
+        finishTimerUI(circularSeekBar);
 
-        // Only penalty if not early stopped
         if (wasNotEarlyStopped) {
             android.util.Log.d("MainActivity", "Session was stopped early");
             int coinsPenalty = coinsManager.calculatePenaltyCoins();
             coinsManager.removeCoins(coinsPenalty);
-
             sendPenaltyNotification(coinsPenalty);
+
+            applyEarlyStopPenalty();
         }
+
+        coinsManager.updateCoinsDisplay(coinsDisplay);
+    }
+
+    /**
+     * Finishes the timer without applying penalties (for cases where the timer finished naturally)
+     */
+    private void finishTimerSilently(CircularSeekBar circularSeekBar) {
+        finishTimerUI(circularSeekBar);
+        coinsManager.updateCoinsDisplay(coinsDisplay);
+    }
+
+    /**
+     * Updates the UI after the timer finishes
+     */
+    private void finishTimerUI(CircularSeekBar circularSeekBar) {
+        isTimerActive = false;
+        timerStartTime = 0;
+
+        if (timerRunnable != null) {
+            handler.removeCallbacks(timerRunnable);
+        }
+
+        timerSyncHelper.clearBlockTime();
+        Intent timerServiceIntent = new Intent(this, TimerNotificationService.class);
+        stopService(timerServiceIntent);
+
+        circularSeekBar.setDisablePointer(false);
+        startTimer.setVisibility(View.VISIBLE);
+        endTimer.setVisibility(View.INVISIBLE);
 
         float lastTimerValue = sharedPreferences.getFloat(TimerConstants.PREF_LAST_TIMER_VALUE, 25);
         circularSeekBar.setProgress(lastTimerValue);
-        coinsManager.updateCoinsDisplay(coinsDisplay); // Update coins display after penalty
+        shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", (int) lastTimerValue, 0));
     }
 
     private void applyEarlyStopPenalty() {
         long allTime = sharedPreferences.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
-
         long newAllTime = allTime / 2;
         sharedPreferences.edit().putLong(TimerConstants.PREF_GET_ALL_TIME, newAllTime).apply();
     }
 
     private void setBlockTime(int minutes) {
-        long blockUntil = System.currentTimeMillis() + ((long) minutes * 60 * 1000);
-        long allTime = sharedPreferences.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
-        allTime += minutes;
-
-        SharedPreferences.Editor editor = sharedPreferences.edit();
-        editor.putLong(TimerConstants.PREF_BLOCK_UNTIL, blockUntil);
-        editor.putLong(TimerConstants.PREF_GET_ALL_TIME, allTime);
-        editor.apply();
+        timerSyncHelper.setBlockTime(minutes);
     }
 
     private void clearBlockTime() {
-        sharedPreferences.edit().remove(TimerConstants.PREF_BLOCK_UNTIL).apply();
+        timerSyncHelper.clearBlockTime();
     }
 
     private void sendPenaltyNotification(int coinsLost) {
@@ -346,7 +391,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putFloat(TimerConstants.PREF_PROGRESS_SECONDS, progress);
         outState.putBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE, isTimerActive);
         outState.putLong("TIMER_START_TIME", timerStartTime);
     }
@@ -354,21 +398,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onRestoreInstanceState(@NonNull Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
-        progress = savedInstanceState.getFloat(TimerConstants.PREF_PROGRESS_SECONDS);
         isTimerActive = savedInstanceState.getBoolean(TimerConstants.PREF_IS_TIMER_ACTIVE);
         timerStartTime = savedInstanceState.getLong("TIMER_START_TIME", 0);
 
-        if (isTimerActive) {
-            CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
-            int minutes = (int) (progress / 60);
-            int seconds = (int) (progress % 60);
-            circularSeekBar.setProgress(minutes);
-            startTimer.setVisibility(View.INVISIBLE);
-            endTimer.setVisibility(View.VISIBLE);
-            circularSeekBar.setDisablePointer(true);
-            shownTime.setText(String.format(Locale.getDefault(), "%d:%02d", minutes, seconds));
-            startCountdown(circularSeekBar);
-        }
+        CircularSeekBar circularSeekBar = findViewById(R.id.circularSeekBar);
+        checkForActiveTimer(circularSeekBar);
     }
 
     @Override
