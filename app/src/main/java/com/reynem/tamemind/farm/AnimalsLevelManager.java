@@ -62,7 +62,7 @@ public class AnimalsLevelManager {
     }
 
     public int getProgressPercent(long totalTime) {
-        return (int) (((double) totalTime / 40000) * 100);
+        return (int) (((double) totalTime / 10000) * 100);
     }
 
     public List<AnimalsLevel> getLevels() {

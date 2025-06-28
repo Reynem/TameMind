@@ -133,6 +133,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/card_gradient_background"
+                        android:minWidth="80dp"
                         android:padding="32dp">
 
                         <com.google.android.material.card.MaterialCardView
@@ -151,7 +152,7 @@
                                 android:layout_height="match_parent"
                                 android:contentDescription="@string/animal"
                                 android:scaleType="centerCrop"
-                                android:src="@drawable/ic_launcher_background" />
+                                android:src="@drawable/mouse" />
 
                         </com.google.android.material.card.MaterialCardView>
 

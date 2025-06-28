@@ -35,7 +35,7 @@
     <string name="settings">Настройки</string>
     <string name="end_timer">Завершить таймер</string>
     <string name="android_app">Android приложение</string>
-    <string name="Add">Добавить</string>
+    <string name="Add">Ввести</string>
     <string name="Remove">Удалить</string>
     <string name="AllowedApps">Разрешённые приложения:</string>
     <string name="animal">Животное</string>
@@ -94,12 +94,12 @@
     <string name="incorrect_pin">Неверный PIN</string>
     <string name="pin_is_established">PIN установлен</string>
 
-    <string name="timer_history">История таймера</string>
+    <string name="timer_history">История</string>
     <string name="statistics">Статистика</string>
-    <string name="total_sessions">%d сессий</string>
-    <string name="total_sessions_label">Всего</string>
+    <string name="total_sessions">%d</string>
+    <string name="total_sessions_label">Сессий</string>
     <string name="today">Сегодня</string>
-    <string name="this_week">На этой неделе</string>
+    <string name="this_week">За Неделю</string>
     <string name="session_history">История сессий</string>
     <string name="clear">Очистить</string>
     <string name="clear_history">Очистить историю</string>

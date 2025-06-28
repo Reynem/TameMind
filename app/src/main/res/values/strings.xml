@@ -95,7 +95,7 @@
     <string name="incorrect_pin">Incorrect PIN</string>
     <string name="pin_is_established">PIN established</string>
 
-    <string name="timer_history">Timer History</string>
+    <string name="timer_history">History</string>
     <string name="statistics">Statistics</string>
     <string name="total_sessions">%d</string>
     <string name="total_sessions_label">Sessions</string>
