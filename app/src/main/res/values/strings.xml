@@ -136,5 +136,9 @@
     <string name="go_to_shop">Go to shop</string>
     <string name="animal_selected">%s selected for farm</string>
 
+    <string name="standard_mode">Standard Mode</string>
+    <string name="strict_mode">Strict Mode</string>
+    <string name="select_mode">Select Mode</string>
+
 
 </resources>

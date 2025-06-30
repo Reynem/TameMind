@@ -135,5 +135,9 @@
     <string name="go_to_shop">В магазин</string>
     <string name="animal_selected">%s выбран для фермы</string>
 
+    <string name="standard_mode">Стандартный режим</string>
+    <string name="strict_mode">Строгий режим</string>
+    <string name="select_mode">Выберите режим</string>
+
 
 </resources>
