@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Button;
 import android.widget.Toast;
@@ -73,6 +74,22 @@ public class SettingsActivity extends AppCompatActivity {
 
         navigationManager = new NavigationManager(navigationView);
         drawerLayout = findViewById(R.id.drawerLayout);
+
+        RadioButton standardMode = findViewById(R.id.radioOption1);
+        RadioButton strictMode = findViewById(R.id.radioOption2);
+
+        // False - standard mode, true - strict mode
+        standardMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                prefs.edit().putBoolean(TimerConstants.PREF_SELECTED_MODE, false).apply();
+            }
+        });
+
+        strictMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked){
+                prefs.edit().putBoolean(TimerConstants.PREF_SELECTED_MODE, true).apply();
+            }
+        });
 
         ImageView openButton = findViewById(R.id.openNav);
         openButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));

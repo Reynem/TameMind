@@ -168,9 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
         checkForActiveTimer(circularSeekBar);
 
-        endTimer.setOnClickListener(v -> {
-            finishTimer(circularSeekBar);
-        });
+        endTimer.setOnClickListener(v -> finishTimer(circularSeekBar));
 
         startTimer.setOnClickListener(v -> {
             long currentTime = System.currentTimeMillis();
@@ -213,7 +211,9 @@ public class MainActivity extends AppCompatActivity {
                 timerStartTime = timerState.startTime;
                 isTimerActive = true;
                 startTimer.setVisibility(View.INVISIBLE);
-                endTimer.setVisibility(View.VISIBLE);
+                if (!sharedPreferences.getBoolean(TimerConstants.PREF_SELECTED_MODE, false)){
+                    endTimer.setVisibility(View.VISIBLE);
+                }
                 circularSeekBar.setDisablePointer(true);
 
                 startSynchronizedTimer(circularSeekBar);
@@ -239,7 +239,9 @@ public class MainActivity extends AppCompatActivity {
 
         circularSeekBar.setDisablePointer(true);
         startTimer.setVisibility(View.INVISIBLE);
-        endTimer.setVisibility(View.VISIBLE);
+        if (!sharedPreferences.getBoolean(TimerConstants.PREF_SELECTED_MODE, false)){
+            endTimer.setVisibility(View.VISIBLE);
+        }
 
         startSynchronizedTimer(circularSeekBar);
     }
