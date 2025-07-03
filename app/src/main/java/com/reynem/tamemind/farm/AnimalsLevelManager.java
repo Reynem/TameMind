@@ -30,7 +30,7 @@ public class AnimalsLevelManager {
     }
 
     public AnimalsLevel getCurrentLevel(long totalTime) {
-        double progress = (double) totalTime / 40000;
+        double progress = (double) totalTime / 10000;
         String selectedAnimalKey = getSelectedAnimal();
 
         if (!selectedAnimalKey.isEmpty()) {
@@ -62,7 +62,7 @@ public class AnimalsLevelManager {
     }
 
     public int getProgressPercent(long totalTime) {
-        return (int) (((double) totalTime / 10000) * 100);
+        return (int) (((double) totalTime / 1000) * 100);
     }
 
     public List<AnimalsLevel> getLevels() {

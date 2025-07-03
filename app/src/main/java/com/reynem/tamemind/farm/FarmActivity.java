@@ -3,6 +3,7 @@ package com.reynem.tamemind.farm;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -111,6 +112,8 @@ public class FarmActivity extends AppCompatActivity {
             animalName.setText(level.nameResId);
             animalImage.setImageResource(level.imageResId);
             int progress = manager.getProgressPercent(totalTime);
+            Log.d("TotalTime", "TotalTime in FarmActivity: " + totalTime);
+            Log.d("Progress", "Progress: " + progress);
             progressAnimal.setProgress(progress);
             progressPercent.setText(String.format(Locale.US, "%d%%", progress));
 
@@ -140,7 +143,7 @@ public class FarmActivity extends AppCompatActivity {
 
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         long totalTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
-        double progress = (double) totalTime / 40000;
+        double progress = (double) totalTime / 10000;
 
         List<AnimalsLevel> allAnimals = manager.getAllAnimals();
         List<AnimalsLevel> levelAnimals = manager.getLevels();
@@ -215,8 +218,7 @@ public class FarmActivity extends AppCompatActivity {
         setupFarmDisplay();
     }
 
-    private String formatTime(long timeInMillis) {
-        long totalMinutes = timeInMillis / (1000 * 60);
+    private String formatTime(long totalMinutes) {
         long hours = totalMinutes / 60;
         long minutes = totalMinutes % 60;
         if (hours > 0) {
