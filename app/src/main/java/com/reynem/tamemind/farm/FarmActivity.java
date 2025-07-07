@@ -102,7 +102,7 @@ public class FarmActivity extends AppCompatActivity {
         ImageView animalImage = findViewById(R.id.animalImage);
         LinearProgressIndicator progressAnimal = findViewById(R.id.progressAnimal);
         TextView progressPercent = findViewById(R.id.progressPercent);
-        TextView totalFocusTime = findViewById(R.id.totalFocusTime);
+//        TextView totalFocusTime = findViewById(R.id.totalFocusTime);
         TextView timeToNext = findViewById(R.id.timeToNext);
         SharedPreferences prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         long totalTime = prefs.getLong(TimerConstants.PREF_GET_ALL_TIME, 0L);
@@ -118,7 +118,7 @@ public class FarmActivity extends AppCompatActivity {
             progressPercent.setText(String.format(Locale.US, "%d%%", progress));
 
             String formattedTime = formatTime(totalTime);
-            totalFocusTime.setText(formattedTime);
+//            totalFocusTime.setText(formattedTime);
 
             updateMotivationText(timeToNext, progress);
         }

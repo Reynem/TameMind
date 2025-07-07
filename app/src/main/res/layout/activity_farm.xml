@@ -123,6 +123,8 @@
                     android:layout_marginTop="8dp"
                     app:cardCornerRadius="24dp"
                     app:cardElevation="8dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
@@ -203,6 +205,8 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="20dp"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
                     app:cardCornerRadius="20dp"
                     app:cardElevation="6dp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -281,74 +285,6 @@
 
                 </com.google.android.material.card.MaterialCardView>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/achievementsCard"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="20dp"
-                    app:cardCornerRadius="20dp"
-                    app:cardElevation="6dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/progressCard"
-                    app:strokeColor="@color/primary_red_very_light"
-                    app:strokeWidth="1dp">
-
-                    <androidx.constraintlayout.widget.ConstraintLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:padding="24dp">
-
-                        <ImageView
-                            android:id="@+id/achievementIcon"
-                            android:layout_width="32dp"
-                            android:layout_height="32dp"
-                            android:src="@drawable/ic_emoji_events"
-                            app:layout_constraintStart_toStartOf="parent"
-                            android:contentDescription="@string/farmMenu"
-                            app:layout_constraintTop_toTopOf="parent"
-                            app:tint="@color/accent_orange" />
-
-                        <TextView
-                            android:id="@+id/achievementTitle"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_marginStart="12dp"
-                            android:fontFamily="sans-serif-medium"
-                            android:text="@string/total_focus_time"
-                            android:textColor="@color/text_primary_light"
-                            android:textSize="18sp"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toEndOf="@id/achievementIcon"
-                            app:layout_constraintTop_toTopOf="@id/achievementIcon" />
-
-                        <TextView
-                            android:id="@+id/totalFocusTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp"
-                            android:fontFamily="sans-serif-black"
-                            android:text="@string/_0h_0m"
-                            android:textColor="@color/accent_orange"
-                            android:textSize="28sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/achievementTitle" />
-
-                        <TextView
-                            android:id="@+id/motivationText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginTop="8dp"
-                            android:fontFamily="sans-serif"
-                            android:text="@string/every_minute_feeds"
-                            android:textColor="@color/text_secondary_light"
-                            android:textSize="14sp"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@id/totalFocusTime" />
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-
-                </com.google.android.material.card.MaterialCardView>
 
                 <TextView
                     android:id="@+id/availableAnimalsTitle"
@@ -358,7 +294,9 @@
                     android:text="@string/available_animals"
                     android:textSize="18sp"
                     android:textStyle="bold"
-                    app:layout_constraintTop_toBottomOf="@id/achievementsCard"
+                    android:layout_marginStart="5dp"
+                    android:layout_marginEnd="5dp"
+                    app:layout_constraintTop_toBottomOf="@id/progressCard"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"/>
 
