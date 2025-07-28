@@ -139,5 +139,8 @@
     <string name="strict_mode">Строгий режим</string>
     <string name="select_mode">Выберите режим</string>
 
+    <string name="please_allow_access_usm">Пожалуйста, разрешите доступ к статистике использования</string>
+
+
 
 </resources>

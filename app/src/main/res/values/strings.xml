@@ -140,5 +140,7 @@
     <string name="strict_mode">Strict Mode</string>
     <string name="select_mode">Select Mode</string>
 
+    <string name="please_allow_access_usm">Please allow access to usage statistics</string>
+
 
 </resources>

@@ -1,15 +1,15 @@
 package com.reynem.tamemind.main;
 
-import android.content.ComponentName;
+import android.app.AppOpsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
 import androidx.activity.EdgeToEdge;
@@ -28,6 +28,7 @@ import android.Manifest;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.provider.Settings;
+import android.widget.Toast;
 
 import me.tankery.lib.circularseekbar.CircularSeekBar;
 import java.util.Locale;
@@ -75,6 +76,16 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        if (!isUsageStatsPermissionGranted(this)) {
+            Intent intent = new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+            Toast.makeText(this, getString(R.string.please_allow_access_usm),
+                    Toast.LENGTH_LONG).show();
+        }
+
+        startService(new Intent(this, AppBlockerService.class));
+
         sharedPreferences = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
         coinsDisplay = findViewById(R.id.coinsAmount);
         coinsManager = new CoinsManager(this);
@@ -83,11 +94,6 @@ public class MainActivity extends AppCompatActivity {
         checkNotificationPermission();
 
         // I will put it there
-        if (!isAccessibilityServiceEnabled(this, AppBlockerService.class)) {
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
 
         NavigationView navigationView = findViewById(R.id.navigationMenu);
 
@@ -346,27 +352,18 @@ public class MainActivity extends AppCompatActivity {
         notificationFarm.showNotification(this, getString(R.string.penalty), message);
     }
 
-    public static boolean isAccessibilityServiceEnabled(Context context, Class<?> accessibilityServiceClass) {
-        ComponentName expectedComponentName = new ComponentName(context, accessibilityServiceClass);
-
-        String enabledServicesSetting = Settings.Secure.getString(context.getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
-        if (enabledServicesSetting == null) {
+    public static boolean isUsageStatsPermissionGranted(Context context) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            ApplicationInfo applicationInfo = packageManager.getApplicationInfo(context.getPackageName(), 0);
+            AppOpsManager appOpsManager = (AppOpsManager) context.getSystemService(Context.APP_OPS_SERVICE);
+            int mode = appOpsManager.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    applicationInfo.uid,
+                    applicationInfo.packageName);
+            return (mode == AppOpsManager.MODE_ALLOWED);
+        } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
-
-        TextUtils.SimpleStringSplitter colonSplitter = new TextUtils.SimpleStringSplitter(':');
-        colonSplitter.setString(enabledServicesSetting);
-
-        while (colonSplitter.hasNext()) {
-            String componentNameString = colonSplitter.next();
-            ComponentName enabledService = ComponentName.unflattenFromString(componentNameString);
-
-            if (enabledService != null && enabledService.equals(expectedComponentName)) {
-                return true;
-            }
-        }
-
-        return false;
     }
 
     private void checkNotificationPermission() {
