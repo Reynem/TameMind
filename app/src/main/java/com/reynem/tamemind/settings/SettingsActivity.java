@@ -3,7 +3,9 @@ package com.reynem.tamemind.settings;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -17,6 +19,7 @@ import android.widget.LinearLayout;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.GravityCompat;
@@ -70,6 +73,8 @@ public class SettingsActivity extends AppCompatActivity {
             return insets;
         });
 
+        prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
+
         NavigationView navigationView = findViewById(R.id.navigationMenu);
 
         navigationManager = new NavigationManager(navigationView);
@@ -78,18 +83,43 @@ public class SettingsActivity extends AppCompatActivity {
         RadioButton standardMode = findViewById(R.id.radioOption1);
         RadioButton strictMode = findViewById(R.id.radioOption2);
 
-        // False - standard mode, true - strict mode
+        boolean isStrictMode = prefs.getBoolean(TimerConstants.PREF_SELECTED_MODE, false);
+
+        if (isStrictMode) {
+            strictMode.setChecked(true);
+        } else {
+            standardMode.setChecked(true);
+        }
+
+        // True - strict mode. False - standard mode.
         standardMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
+            if (isChecked) {
                 prefs.edit().putBoolean(TimerConstants.PREF_SELECTED_MODE, false).apply();
             }
         });
 
         strictMode.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked){
-                prefs.edit().putBoolean(TimerConstants.PREF_SELECTED_MODE, true).apply();
+            if (isChecked) {
+                if (!Settings.canDrawOverlays(this)) {
+                    new AlertDialog.Builder(this)
+                            .setTitle(getString(R.string.overlay_permission_title))
+                            .setMessage(getString(R.string.overlay_permission_message))
+                            .setPositiveButton(getString(R.string.yes), (dialog, which) -> {
+                                Intent intent = new Intent(Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                                        Uri.parse("package:" + getPackageName()));
+                                startActivity(intent);
+                            })
+                            .setNegativeButton(getString(R.string.no), (dialog, which) -> {
+                                buttonView.setChecked(false);
+                            })
+                            .setCancelable(false)
+                            .show();
+                } else {
+                    prefs.edit().putBoolean(TimerConstants.PREF_SELECTED_MODE, true).apply();
+                }
             }
         });
+
 
         ImageView openButton = findViewById(R.id.openNav);
         openButton.setOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
@@ -124,7 +154,6 @@ public class SettingsActivity extends AppCompatActivity {
         Button btnRemove = findViewById(R.id.btn_remove);
         appsContainer = findViewById(R.id.appsContainer);
         emptyStateLayout = findViewById(R.id.emptyStateLayout);
-        prefs = getSharedPreferences(TimerConstants.PREFS_NAME, MODE_PRIVATE);
 
         @SuppressLint("CutPasteId")
         AutoCompleteTextView autoCompleteTextView = findViewById(R.id.edit_package_name);

@@ -23,10 +23,13 @@ import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 public class AppBlockerService extends Service {
-
-    // TODO: CHANGE STRICT MODE TO OVERLAY
 
     private static final String TAG = "AppBlockerService";
     private static final long POLL_INTERVAL = 1000; // ms
@@ -42,9 +45,13 @@ public class AppBlockerService extends Service {
         }
     };
 
+    private WindowManager windowManager;
+    private View overlayView;
+
     @Override
     public void onCreate() {
         super.onCreate();
+        windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
         handler.post(pollRunnable);
     }
 
@@ -57,6 +64,7 @@ public class AppBlockerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         handler.removeCallbacks(pollRunnable);
+        removeOverlay();
     }
 
     private void checkForegroundApp() {
@@ -70,7 +78,13 @@ public class AppBlockerService extends Service {
                 Set<String> allowedApps = prefs.getStringSet(TimerConstants.PREF_ALLOWED_APPS, getDefaultAllowedApps());
                 if (!allowedApps.contains(foregroundApp)) {
                     Log.d(TAG, "Foreground app: " + foregroundApp);
-                    showBlockNotification();
+
+                    boolean overlayMode = prefs.getBoolean(TimerConstants.PREF_SELECTED_MODE, false);
+                    if (overlayMode) {
+                        showBlockOverlay();
+                    } else {
+                        showBlockNotification();
+                    }
                 }
             }
         }
@@ -108,6 +122,8 @@ public class AppBlockerService extends Service {
     }
 
     private void showBlockNotification() {
+        Log.d("AppBlockerService", "Showing notification");
+
         createNotificationChannel();
 
         Intent fullScreenIntent = new Intent(this, BlockedActivity.class);
@@ -120,8 +136,8 @@ public class AppBlockerService extends Service {
 
         Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
                 .setSmallIcon(R.drawable.ic_lock)
-                .setContentTitle("App Blocked")
-                .setContentText("This app is currently blocked")
+                .setContentTitle(getString(R.string.app_blocked))
+                .setContentText(getString(R.string.this_app_is_blocked))
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_ALARM)
                 .setFullScreenIntent(fullScreenPendingIntent, true)
@@ -131,6 +147,48 @@ public class AppBlockerService extends Service {
         NotificationManager manager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         if (manager != null) {
             manager.notify(NOTIFICATION_ID, notification);
+        }
+    }
+
+    // TODO: Delete UI section
+
+    private void showBlockOverlay() {
+        removeOverlay();
+
+        Log.d("AppBlockerService", "Showing overlay");
+
+        try {
+            overlayView = LayoutInflater.from(this).inflate(R.layout.overlay_blocked, new FrameLayout(this), false);
+
+            WindowManager.LayoutParams params = new WindowManager.LayoutParams(
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.MATCH_PARENT,
+                    WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                            WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
+                    android.graphics.PixelFormat.TRANSLUCENT
+            );
+
+            windowManager.addView(overlayView, params);
+
+            Button closeButton = overlayView.findViewById(R.id.overlay_close_button);
+            if (closeButton != null) {
+                closeButton.setOnClickListener(v -> removeOverlay());
+            }
+
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to show overlay: " + e.getMessage());
+            showBlockNotification();
+        }
+    }
+
+    private void removeOverlay() {
+        if (overlayView != null && windowManager != null) {
+            try {
+                windowManager.removeViewImmediate(overlayView);
+            } catch (Exception e) {
+                Log.e(TAG, "Failed to remove overlay: " + e.getMessage());
+            }
+            overlayView = null;
         }
     }
 
