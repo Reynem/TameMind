@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#E6000000">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:background="@drawable/overlay_background"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:padding="32dp">
+
+        <ImageView
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:src="@drawable/ic_lock"
+            android:alpha="0.8"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/end_timer" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/strict_mode_active"
+            android:textColor="#FFFFFF"
+            android:textSize="22sp"
+            android:fontFamily="sans-serif-medium"
+            android:layout_marginBottom="16dp"
+            android:gravity="center" />
+
+        <TextView
+            android:id="@+id/overlay_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/startTime"
+            android:textColor="#B0BEC5"
+            android:textSize="36sp"
+            android:fontFamily="sans-serif-light"
+            android:layout_marginBottom="16dp"
+            android:letterSpacing="0.1" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/overlay_message"
+            android:textColor="#90A4AE"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginBottom="24dp"
+            android:alpha="0.8" />
+
+        <Button
+            android:id="@+id/overlay_close_button"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:text="@string/return_toMainActivity"
+            android:background="@drawable/back_button_background"
+            android:textColor="#FFFFFF"
+            android:textSize="14sp"
+            android:fontFamily="sans-serif-medium"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:textAllCaps="false"
+            android:alpha="0.9" />
+
+    </LinearLayout>
+
+</RelativeLayout>

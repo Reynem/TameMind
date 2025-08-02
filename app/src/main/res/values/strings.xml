@@ -142,5 +142,16 @@
 
     <string name="please_allow_access_usm">Please allow access to usage statistics</string>
 
+    <string name="strict_mode_active">Strict mode is active</string>
+    <string name="overlay_message">This app is blocked</string>
+
+    <string name="app_blocked">App is blocked</string>
+    <string name="this_app_is_blocked">This app is currently blocked</string>
+
+    <string name="overlay_permission_title">Permission required</string>
+    <string name="overlay_permission_message">Strict mode requires permission to draw over other apps. Go to settings?</string>
+    <string name="yes">Yes</string>
+    <string name="no">Cancel</string>
+
 
 </resources>

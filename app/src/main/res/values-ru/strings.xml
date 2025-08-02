@@ -141,6 +141,16 @@
 
     <string name="please_allow_access_usm">Пожалуйста, разрешите доступ к статистике использования</string>
 
+    <string name="strict_mode_active">Строгий режим включен</string>
+    <string name="overlay_message">Это приложение заблокировано</string>
+
+    <string name="app_blocked">Приложение заблокировано</string>
+    <string name="this_app_is_blocked">На данный момент это приложение заблокировано</string>
+
+    <string name="overlay_permission_title">Требуется разрешение</string>
+    <string name="overlay_permission_message">Для работы строгого режима необходимо разрешить отображение поверх других приложений. Перейти к настройкам?</string>
+    <string name="yes">Да</string>
+    <string name="no">Отмена</string>
 
 
 </resources>
